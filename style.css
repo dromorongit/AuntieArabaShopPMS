@@ -47,3 +47,40 @@ button:hover {
 select[multiple] {
   height: 100px;
 }
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  body {
+    margin: 10px;
+    padding: 0;
+  }
+
+  form {
+    padding: 15px;
+    margin: 0;
+    max-width: none;
+  }
+
+  input, textarea, select {
+    padding: 12px; /* Larger for touch */
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+
+  button {
+    padding: 15px 20px;
+    font-size: 16px;
+    width: 100%; /* Full width on mobile */
+  }
+
+  label {
+    font-size: 14px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+}
