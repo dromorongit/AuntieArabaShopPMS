@@ -18,35 +18,25 @@ document.addEventListener('DOMContentLoaded', () => {
   // Handle form submission
   addProductForm.addEventListener('submit', (e) => {
     e.preventDefault();
-
-    const product = {
-      product_name: document.getElementById('product_name').value,
-      cover_image: document.getElementById('cover_image').value,
-      other_images: document.getElementById('other_images').value.split(',').map(img => img.trim()),  // Convert to array
-      sizes: Array.from(document.getElementById('sizes').selectedOptions).map(option => option.value),
-      colors: document.getElementById('colors').value.split(',').map(color => color.trim()),  // Convert to array
-      fabric_type: document.getElementById('fabric_type').value,
-      short_description: document.getElementById('short_description').value,
-      long_description: document.getElementById('long_description').value,
-      price_ghc: parseFloat(document.getElementById('price_ghc').value),
-      stock_status: document.getElementById('stock_status').value,
-      categories: Array.from(document.getElementById('categories').selectedOptions).map(option => option.value),
-      sections: Array.from(document.getElementById('sections').selectedOptions).map(option => option.value),
-    };
-
+  
+    const formData = new FormData(addProductForm);
+  
+    // Add non-file fields
+    formData.append('sizes', JSON.stringify(Array.from(document.getElementById('sizes').selectedOptions).map(option => option.value)));
+    formData.append('colors', JSON.stringify(document.getElementById('colors').value.split(',').map(color => color.trim())));
+    formData.append('categories', JSON.stringify(Array.from(document.getElementById('categories').selectedOptions).map(option => option.value)));
+    formData.append('sections', JSON.stringify(Array.from(document.getElementById('sections').selectedOptions).map(option => option.value)));
+  
     if (promoCheckbox.checked) {
-      product.promo = true;
-      product.promo_price = parseFloat(document.getElementById('promo_price').value);
+      formData.append('promo', 'true');
+      formData.append('promo_price', document.getElementById('promo_price').value);
     } else {
-      product.promo = false;
+      formData.append('promo', 'false');
     }
-
+  
     fetch('/products', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(product),
+      body: formData,
     })
     .then(response => response.json())
     .then(data => {

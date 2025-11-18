@@ -11,15 +11,15 @@
   
   <section id="add-product">
     <h2>Add New Product</h2>
-    <form id="addProductForm">
+    <form id="addProductForm" enctype="multipart/form-data">
       <label for="product_name">Product Name:</label>
       <input type="text" id="product_name" required><br>
-      
-      <label for="cover_image">Cover Image (file path):</label>
-      <input type="text" id="cover_image" placeholder="Enter image path (e.g., uploads/image.jpg)"><br>
-      
-      <label for="other_images">Other Images (comma-separated paths):</label>
-      <input type="text" id="other_images" placeholder="e.g., uploads/img1.jpg,uploads/img2.jpg"><br>
+
+      <label for="cover_image">Cover Image:</label>
+      <input type="file" id="cover_image" name="cover_image" accept="image/*"><br>
+
+      <label for="other_images">Other Images:</label>
+      <input type="file" id="other_images" name="other_images" accept="image/*" multiple><br>
       
       <label for="sizes">Sizes (multiple select):</label>
       <select id="sizes" multiple>
