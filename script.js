@@ -22,13 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const formData = new FormData(addProductForm);
   
     // Add non-file fields
-    const sizes = Array.from(document.querySelectorAll('input[name="sizes"]:checked')).map(cb => cb.value);
-    formData.append('sizes', JSON.stringify(sizes));
+    formData.append('sizes', JSON.stringify(Array.from(document.getElementById('sizes').selectedOptions).map(option => option.value)));
     formData.append('colors', JSON.stringify(document.getElementById('colors').value.split(',').map(color => color.trim())));
-    const categories = Array.from(document.querySelectorAll('input[name="categories"]:checked')).map(cb => cb.value);
-    formData.append('categories', JSON.stringify(categories));
-    const sections = Array.from(document.querySelectorAll('input[name="sections"]:checked')).map(cb => cb.value);
-    formData.append('sections', JSON.stringify(sections));
+    formData.append('categories', JSON.stringify(Array.from(document.getElementById('categories').selectedOptions).map(option => option.value)));
+    formData.append('sections', JSON.stringify(Array.from(document.getElementById('sections').selectedOptions).map(option => option.value)));
   
     if (promoCheckbox.checked) {
       formData.append('promo', 'true');
