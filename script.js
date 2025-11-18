@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
       price_ghc: parseFloat(document.getElementById('price_ghc').value),
       stock_status: document.getElementById('stock_status').value,
       categories: Array.from(document.getElementById('categories').selectedOptions).map(option => option.value),
+      sections: Array.from(document.getElementById('sections').selectedOptions).map(option => option.value),
     };
 
     if (promoCheckbox.checked) {
@@ -40,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
       product.promo = false;
     }
 
-    fetch('http://localhost:3000/products', {
+    fetch('/products', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
