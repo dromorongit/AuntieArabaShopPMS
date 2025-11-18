@@ -21,25 +21,25 @@
       <label for="other_images">Other Images:</label>
       <input type="file" id="other_images" name="other_images" accept="image/*" multiple><br>
       
-      <label for="sizes">Sizes (multiple select):</label>
-      <select id="sizes" multiple>
-        <option value="S">S</option>
-        <option value="L">L</option>
-        <option value="XL">XL</option>
-        <option value="2XL">2XL</option>
-        <option value="3XL">3XL</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-        <option value="13">13</option>
-        <option value="14">14</option>
-        <option value="15">15</option>
-        <option value="16">16</option>
-        <option value="17">17</option>
-        <option value="18">18</option>
-        <option value="19">19</option>
-        <option value="20">20</option>
-      </select><br>
+      <label>Sizes:</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="sizes" value="S"> S</label>
+        <label><input type="checkbox" name="sizes" value="L"> L</label>
+        <label><input type="checkbox" name="sizes" value="XL"> XL</label>
+        <label><input type="checkbox" name="sizes" value="2XL"> 2XL</label>
+        <label><input type="checkbox" name="sizes" value="3XL"> 3XL</label>
+        <label><input type="checkbox" name="sizes" value="10"> 10</label>
+        <label><input type="checkbox" name="sizes" value="11"> 11</label>
+        <label><input type="checkbox" name="sizes" value="12"> 12</label>
+        <label><input type="checkbox" name="sizes" value="13"> 13</label>
+        <label><input type="checkbox" name="sizes" value="14"> 14</label>
+        <label><input type="checkbox" name="sizes" value="15"> 15</label>
+        <label><input type="checkbox" name="sizes" value="16"> 16</label>
+        <label><input type="checkbox" name="sizes" value="17"> 17</label>
+        <label><input type="checkbox" name="sizes" value="18"> 18</label>
+        <label><input type="checkbox" name="sizes" value="19"> 19</label>
+        <label><input type="checkbox" name="sizes" value="20"> 20</label>
+      </div><br>
       
       <label for="colors">Colors (comma-separated):</label>
       <input type="text" id="colors" placeholder="e.g., Red, Blue, Green"><br>
@@ -67,30 +67,30 @@
       <label for="promo_price" id="promo_price_label" style="display: none;">Promo Price (GHC):</label>
       <input type="number" id="promo_price" style="display: none;"><br>
       
-      <label for="categories">Categories (multiple select):</label>
-      <select id="categories" multiple>
-        <option value="Ladies Basic Tops">Ladies Basic Tops</option>
-        <option value="Crop Tops">Crop Tops</option>
-        <option value="Night Wear">Night Wear</option>
-        <option value="Bum Shorts">Bum Shorts</option>
-        <option value="2-in-1 Night Wears">2-in-1 Night Wears</option>
-        <option value="2-in-1 Tops and Downs">2-in-1 Tops and Downs</option>
-        <option value="Elegant Dresses">Elegant Dresses</option>
-        <option value="Stylish Dresses">Stylish Dresses</option>
-        <option value="Office Dresses">Office Dresses</option>
-        <option value="Panties">Panties</option>
-        <option value="Hair Bands">Hair Bands</option>
-        <option value="Unisex NFL Jerseys">Unisex NFL Jerseys</option>
-        <option value="Football Jerseys">Football Jerseys</option>
-        <option value="Other Ladies Fashion Items">Other Ladies Fashion Items</option>
-      </select><br>
+      <label>Categories:</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="categories" value="Ladies Basic Tops"> Ladies Basic Tops</label>
+        <label><input type="checkbox" name="categories" value="Crop Tops"> Crop Tops</label>
+        <label><input type="checkbox" name="categories" value="Night Wear"> Night Wear</label>
+        <label><input type="checkbox" name="categories" value="Bum Shorts"> Bum Shorts</label>
+        <label><input type="checkbox" name="categories" value="2-in-1 Night Wears"> 2-in-1 Night Wears</label>
+        <label><input type="checkbox" name="categories" value="2-in-1 Tops and Downs"> 2-in-1 Tops and Downs</label>
+        <label><input type="checkbox" name="categories" value="Elegant Dresses"> Elegant Dresses</label>
+        <label><input type="checkbox" name="categories" value="Stylish Dresses"> Stylish Dresses</label>
+        <label><input type="checkbox" name="categories" value="Office Dresses"> Office Dresses</label>
+        <label><input type="checkbox" name="categories" value="Panties"> Panties</label>
+        <label><input type="checkbox" name="categories" value="Hair Bands"> Hair Bands</label>
+        <label><input type="checkbox" name="categories" value="Unisex NFL Jerseys"> Unisex NFL Jerseys</label>
+        <label><input type="checkbox" name="categories" value="Football Jerseys"> Football Jerseys</label>
+        <label><input type="checkbox" name="categories" value="Other Ladies Fashion Items"> Other Ladies Fashion Items</label>
+      </div><br>
 
-      <label for="sections">Sections (multiple select):</label>
-      <select id="sections" multiple>
-        <option value="New Arrivals">New Arrivals</option>
-        <option value="Top Deals">Top Deals</option>
-        <option value="Fast Selling Products">Fast Selling Products</option>
-      </select><br>
+      <label>Sections:</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="sections" value="New Arrivals"> New Arrivals</label>
+        <label><input type="checkbox" name="sections" value="Top Deals"> Top Deals</label>
+        <label><input type="checkbox" name="sections" value="Fast Selling Products"> Fast Selling Products</label>
+      </div><br>
 
       <button type="submit">Add Product</button>
     </form>

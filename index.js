@@ -25,7 +25,6 @@ app.use(session({
   saveUninitialized: false,
   cookie: { secure: false } // Set to true in production with HTTPS
 }));
-app.use(express.static('.'));
 
 // Auth middleware
 function requireAuth(req, res, next) {
@@ -44,6 +43,8 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'login.html'));
   }
 });
+
+app.use(express.static('.'));
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
