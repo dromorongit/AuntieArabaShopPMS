@@ -105,13 +105,20 @@ app.use('/uploads', express.static('uploads'));
 // Create (Add) a product
 app.post('/products', requireAuth, upload.fields([{ name: 'cover_image', maxCount: 1 }, { name: 'other_images', maxCount: 10 }]), async (req, res) => {
   try {
+    let colors = [];
+    try {
+      colors = JSON.parse(req.body.colors);
+    } catch {
+      colors = req.body.colors.split(',').map(s => s.trim());
+    }
+
     const newProduct = new Product({
       product_id: Date.now().toString(),
       product_name: req.body.product_name,
       cover_image: req.files.cover_image ? req.files.cover_image[0].path : '',
       other_images: req.files.other_images ? req.files.other_images.map(file => file.path) : [],
       sizes: req.body.sizes ? JSON.parse(req.body.sizes) : [],
-      colors: JSON.parse(req.body.colors),
+      colors: colors,
       fabric_type: req.body.fabric_type,
       short_description: req.body.short_description,
       long_description: req.body.long_description,
