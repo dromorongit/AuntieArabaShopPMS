@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const multer = require('multer');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
@@ -97,21 +98,6 @@ app.get('/dashboard', requireAuth, (req, res) => {
 });
 
 app.use('/uploads', express.static('uploads'));
-
-// Read products from file
-function readProducts() {
-  try {
-    const data = fs.readFileSync(PRODUCTS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (err) {
-    return [];  // Return empty array if file doesn't exist or is empty
-  }
-}
-
-// Write products to file
-function writeProducts(products) {
-  fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
-}
 
 // CRUD Routes
 
