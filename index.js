@@ -133,13 +133,35 @@ app.get('/products/:id', requireAuth, (req, res) => {
 });
 
 // Update a product
-app.put('/products/:id', requireAuth, (req, res) => {
+app.put('/products/:id', requireAuth, upload.fields([{ name: 'cover_image', maxCount: 1 }, { name: 'other_images', maxCount: 10 }]), (req, res) => {
   const products = readProducts();
   const index = products.findIndex(p => p.product_id === req.params.id);
   if (index !== -1) {
-    products[index] = { ...products[index], ...req.body, product_id: products[index].product_id };  // Preserve ID
+    const oldProduct = products[index];
+    const updatedProduct = {
+      product_name: req.body.product_name || oldProduct.product_name,
+      cover_image: req.files.cover_image ? req.files.cover_image[0].path : oldProduct.cover_image,
+      other_images: req.files.other_images ? req.files.other_images.map(file => file.path) : oldProduct.other_images,
+      sizes: req.body.sizes ? JSON.parse(req.body.sizes) : oldProduct.sizes,
+      colors: req.body.colors ? JSON.parse(req.body.colors) : oldProduct.colors,
+      fabric_type: req.body.fabric_type || oldProduct.fabric_type,
+      short_description: req.body.short_description || oldProduct.short_description,
+      long_description: req.body.long_description || oldProduct.long_description,
+      price_ghc: req.body.price_ghc ? parseFloat(req.body.price_ghc) : oldProduct.price_ghc,
+      stock_status: req.body.stock_status || oldProduct.stock_status,
+      categories: req.body.categories ? JSON.parse(req.body.categories) : oldProduct.categories,
+      sections: req.body.sections ? JSON.parse(req.body.sections) : oldProduct.sections,
+      product_id: oldProduct.product_id,
+    };
+    if (req.body.promo === 'true') {
+      updatedProduct.promo = true;
+      updatedProduct.promo_price = req.body.promo_price ? parseFloat(req.body.promo_price) : oldProduct.promo_price;
+    } else {
+      updatedProduct.promo = false;
+    }
+    products[index] = updatedProduct;
     writeProducts(products);
-    res.json(products[index]);
+    res.json(updatedProduct);
   } else {
     res.status(404).json({ message: 'Product not found' });
   }
