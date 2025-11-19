@@ -10,10 +10,16 @@ const PORT = process.env.PORT || 3000;
 const upload = multer({ dest: 'uploads/' });
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || process.env.DATABASE_URL, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+const mongoUri = process.env.MONGODB_URI || process.env.DATABASE_URL;
+if (mongoUri) {
+  mongoose.connect(mongoUri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+} else {
+  console.error('No MongoDB URI provided. Set MONGODB_URI or DATABASE_URL environment variable.');
+  process.exit(1);
+}
 
 // Product schema
 const productSchema = new mongoose.Schema({
