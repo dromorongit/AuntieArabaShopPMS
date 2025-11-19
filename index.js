@@ -16,6 +16,7 @@ if (mongoUri) {
   mongoose.connect(mongoUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    ssl: false,
   });
 } else {
   console.error('No MongoDB URI provided. Set MONGODB_URI or DATABASE_URL environment variable.');
@@ -126,7 +127,7 @@ app.post('/products', requireAuth, upload.fields([{ name: 'cover_image', maxCoun
     res.status(201).json(newProduct);
   } catch (err) {
     console.error(err);
-    res.status(500).send();
+    res.status(500).send(err.message);
   }
 });
 
@@ -137,7 +138,7 @@ app.get('/products', requireAuth, async (req, res) => {
     res.json(products);
   } catch (err) {
     console.error(err);
-    res.status(500).send();
+    res.status(500).send(err.message);
   }
 });
 

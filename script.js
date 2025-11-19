@@ -46,7 +46,12 @@ document.addEventListener('DOMContentLoaded', () => {
       method: method,
       body: formData,
     })
-    .then(response => response.json())
+    .then(response => {
+      if (!response.ok) {
+        return response.text().then(text => { throw new Error(text || 'Server error'); });
+      }
+      return response.json();
+    })
     .then(data => {
       alert(`Product ${editingId ? 'updated' : 'added'} successfully!`);
       addProductForm.reset();  // Clear form
@@ -56,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
     .catch(error => {
       console.error('Error saving product:', error);
-      alert('Failed to save product.');
+      alert('Failed to save product: ' + error.message);
     });
   });
 });
