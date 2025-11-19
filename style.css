@@ -157,3 +157,30 @@ label[for="promo"] {
     margin-top: 5px;
   }
 }
+
+.product-item {
+  background: #f9f9f9;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.product-item h3 {
+  margin: 0;
+  color: #333;
+}
+
+.product-item p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.product-item button {
+  margin-left: 10px;
+  padding: 5px 10px;
+  font-size: 14px;
+}

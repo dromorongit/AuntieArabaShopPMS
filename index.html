@@ -10,7 +10,7 @@
   <h1>Product Management Dashboard</h1>
   
   <section id="add-product">
-    <h2>Add New Product</h2>
+    <h2 id="form-title">Add New Product</h2>
     <form id="addProductForm" enctype="multipart/form-data">
       <label for="product_name">Product Name:</label>
       <input type="text" id="product_name" required><br>
@@ -95,7 +95,12 @@
       <button type="submit">Add Product</button>
     </form>
   </section>
-  
+
+  <section id="product-list">
+    <h2>Product List</h2>
+    <div id="products"></div>
+  </section>
+
   <script src="script.js"></script>
 </body>
 </html>
