@@ -78,8 +78,8 @@ function loadProducts() {
       div.innerHTML = `
         <h3>${product.product_name}</h3>
         <p>Price: ${product.price_ghc}</p>
-        <button onclick="editProduct('${product.product_id}')">Edit</button>
-        <button onclick="deleteProduct('${product.product_id}')">Delete</button>
+        <button onclick="editProduct('${product._id}')">Edit</button>
+        <button onclick="deleteProduct('${product._id}')">Delete</button>
       `;
       container.appendChild(div);
     });
