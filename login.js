@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loginBtn.disabled = true;
 
     try {
+      console.log('Attempting login with:', username);
       const response = await fetch('/login', {
         method: 'POST',
         headers: {
@@ -23,10 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
         body: JSON.stringify({ username, password }),
       });
 
+      console.log('Login response status:', response.status);
       if (response.ok) {
+        console.log('Login successful, redirecting to dashboard');
         // Success - redirect to dashboard
         window.location.href = '/dashboard';
       } else {
+        console.log('Login failed with status:', response.status);
         // Invalid credentials
         showLoginError('Invalid email or password. Please try again.');
       }

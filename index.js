@@ -5,6 +5,7 @@ const multer = require('multer');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const fs = require('fs');
+const cookieParser = require('cookie-parser');
 
 // Connect to MongoDB
 const mongoUri = process.env.MONGODB_URI || process.env.DATABASE_URL;
@@ -24,6 +25,7 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Session configuration
 app.use(session({
@@ -82,8 +84,8 @@ const Product = mongoose.model('Product', productSchema);
 
 // Root route - check authentication
 app.get('/', (req, res) => {
-  console.log('Root route accessed, session loggedIn:', req.session.loggedIn);
-  if (req.session.loggedIn) {
+  console.log('Root route accessed, auth cookie:', req.cookies.auth);
+  if (req.cookies.auth === 'true') {
     console.log('Redirecting to dashboard');
     res.redirect('/dashboard');
   } else {
@@ -94,8 +96,8 @@ app.get('/', (req, res) => {
 
 // Serve dashboard - requires authentication
 app.get('/dashboard', (req, res) => {
-  console.log('Dashboard route accessed, session loggedIn:', req.session.loggedIn);
-  if (req.session.loggedIn) {
+  console.log('Dashboard route accessed, auth cookie:', req.cookies.auth);
+  if (req.cookies.auth === 'true') {
     console.log('Serving dashboard');
     res.sendFile(__dirname + '/index.html');
   } else {
@@ -114,8 +116,14 @@ app.post('/login', async (req, res) => {
   const adminPassword = 'auntiearaba123';
 
   if (username === adminUsername && password === adminPassword) {
-    req.session.loggedIn = true;
-    console.log('Login successful, session set');
+    // Set a simple auth cookie (valid for 24 hours)
+    res.cookie('auth', 'true', {
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+    console.log('Login successful, cookie set');
     res.status(200).send();
   } else {
     console.log('Login failed: invalid credentials');
@@ -125,14 +133,9 @@ app.post('/login', async (req, res) => {
 
 // Logout route
 app.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error('Error destroying session:', err);
-      res.status(500).send();
-    } else {
-      res.status(200).send();
-    }
-  });
+  res.clearCookie('auth');
+  console.log('User logged out, cookie cleared');
+  res.status(200).send();
 });
 
 // Get all products
