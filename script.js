@@ -55,10 +55,10 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('long_description', document.getElementById('edit_long_description').value);
     formData.append('price_ghc', document.getElementById('edit_price_ghc').value);
     formData.append('stock_status', document.getElementById('edit_stock_status').value);
-    formData.append('sizes', JSON.stringify(Array.from(document.getElementById('edit_sizes').selectedOptions).map(option => option.value)));
-    formData.append('colors', JSON.stringify(document.getElementById('edit_colors').value.split(',').map(color => color.trim())));
-    formData.append('categories', JSON.stringify(Array.from(document.getElementById('edit_categories').selectedOptions).map(option => option.value)));
-    formData.append('sections', JSON.stringify(Array.from(document.getElementById('edit_sections').selectedOptions).map(option => option.value)));
+    formData.append('sizes', Array.from(document.getElementById('edit_sizes').selectedOptions).map(option => option.value).join(','));
+    formData.append('colors', document.getElementById('edit_colors').value);
+    formData.append('categories', Array.from(document.getElementById('edit_categories').selectedOptions).map(option => option.value).join(','));
+    formData.append('sections', Array.from(document.getElementById('edit_sections').selectedOptions).map(option => option.value).join(','));
 
     if (document.getElementById('edit_promo').checked) {
       formData.append('promo', 'true');
@@ -104,10 +104,10 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('long_description', document.getElementById('long_description').value);
     formData.append('price_ghc', document.getElementById('price_ghc').value);
     formData.append('stock_status', document.getElementById('stock_status').value);
-    formData.append('sizes', JSON.stringify(Array.from(document.getElementById('sizes').selectedOptions).map(option => option.value)));
-    formData.append('colors', JSON.stringify(document.getElementById('colors').value.split(',').map(color => color.trim())));
-    formData.append('categories', JSON.stringify(Array.from(document.getElementById('categories').selectedOptions).map(option => option.value)));
-    formData.append('sections', JSON.stringify(Array.from(document.getElementById('sections').selectedOptions).map(option => option.value)));
+    formData.append('sizes', Array.from(document.getElementById('sizes').selectedOptions).map(option => option.value).join(','));
+    formData.append('colors', document.getElementById('colors').value);
+    formData.append('categories', Array.from(document.getElementById('categories').selectedOptions).map(option => option.value).join(','));
+    formData.append('sections', Array.from(document.getElementById('sections').selectedOptions).map(option => option.value).join(','));
   
     if (promoCheckbox.checked) {
       formData.append('promo', 'true');

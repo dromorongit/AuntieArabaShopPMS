@@ -119,10 +119,10 @@ app.get('/products/:id', async (req, res) => {
 app.post('/products', upload.fields([{ name: 'cover_image', maxCount: 1 }, { name: 'other_images', maxCount: 10 }]), async (req, res) => {
   try {
     const data = req.body;
-    data.sizes = JSON.parse(data.sizes || '[]');
-    data.colors = JSON.parse(data.colors || '[]');
-    data.categories = JSON.parse(data.categories || '[]');
-    data.sections = JSON.parse(data.sections || '[]');
+    data.sizes = data.sizes ? data.sizes.split(',').map(s => s.trim()).filter(s => s) : [];
+    data.colors = data.colors ? data.colors.split(',').map(c => c.trim()).filter(c => c) : [];
+    data.categories = data.categories ? data.categories.split(',').map(c => c.trim()).filter(c => c) : [];
+    data.sections = data.sections ? data.sections.split(',').map(s => s.trim()).filter(s => s) : [];
     data.promo = data.promo === 'true';
     if (req.files.cover_image) data.cover_image = req.files.cover_image[0].path;
     if (req.files.other_images) data.other_images = req.files.other_images.map(file => file.path);
@@ -139,10 +139,10 @@ app.post('/products', upload.fields([{ name: 'cover_image', maxCount: 1 }, { nam
 app.put('/products/:id', upload.fields([{ name: 'cover_image', maxCount: 1 }, { name: 'other_images', maxCount: 10 }]), async (req, res) => {
   try {
     const data = req.body;
-    data.sizes = JSON.parse(data.sizes || '[]');
-    data.colors = JSON.parse(data.colors || '[]');
-    data.categories = JSON.parse(data.categories || '[]');
-    data.sections = JSON.parse(data.sections || '[]');
+    data.sizes = data.sizes ? data.sizes.split(',').map(s => s.trim()).filter(s => s) : [];
+    data.colors = data.colors ? data.colors.split(',').map(c => c.trim()).filter(c => c) : [];
+    data.categories = data.categories ? data.categories.split(',').map(c => c.trim()).filter(c => c) : [];
+    data.sections = data.sections ? data.sections.split(',').map(s => s.trim()).filter(s => s) : [];
     data.promo = data.promo === 'true';
     if (req.files.cover_image) data.cover_image = req.files.cover_image[0].path;
     if (req.files.other_images) data.other_images = req.files.other_images.map(file => file.path);
