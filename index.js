@@ -125,7 +125,7 @@ Product.collection.dropIndex("product_id_1").then(() => {
 // User Authentication Routes
 
 // Register
-app.post('/api/register', async (req, res) => {
+app.post('/auth/register', async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
 
@@ -165,7 +165,7 @@ app.post('/api/register', async (req, res) => {
 });
 
 // Login
-app.post('/api/login', async (req, res) => {
+app.post('/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -195,8 +195,26 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// Refresh token
+app.post('/auth/refresh', authenticateToken, async (req, res) => {
+  try {
+    // Since token is valid (middleware passed), generate new token
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    const newToken = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+
+    res.json({
+      message: 'Token refreshed',
+      token: newToken
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Get user profile
-app.get('/api/profile', authenticateToken, async (req, res) => {
+app.get('/auth/profile', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     if (!user) return res.status(404).json({ error: 'User not found' });
@@ -208,7 +226,7 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
 });
 
 // Update user profile
-app.put('/api/profile', authenticateToken, async (req, res) => {
+app.put('/auth/profile', authenticateToken, async (req, res) => {
   try {
     const { name, phone, address } = req.body;
 
@@ -230,7 +248,7 @@ app.put('/api/profile', authenticateToken, async (req, res) => {
 });
 
 // Change password
-app.put('/api/change-password', authenticateToken, async (req, res) => {
+app.put('/auth/change-password', authenticateToken, async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
 
