@@ -25,8 +25,14 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
   
     const formData = new FormData(addProductForm);
-  
+
     // Add non-file fields
+    formData.append('product_name', document.getElementById('product_name').value);
+    formData.append('fabric_type', document.getElementById('fabric_type').value);
+    formData.append('short_description', document.getElementById('short_description').value);
+    formData.append('long_description', document.getElementById('long_description').value);
+    formData.append('price_ghc', document.getElementById('price_ghc').value);
+    formData.append('stock_status', document.getElementById('stock_status').value);
     formData.append('sizes', JSON.stringify(Array.from(document.getElementById('sizes').selectedOptions).map(option => option.value)));
     formData.append('colors', JSON.stringify(document.getElementById('colors').value.split(',').map(color => color.trim())));
     formData.append('categories', JSON.stringify(Array.from(document.getElementById('categories').selectedOptions).map(option => option.value)));
