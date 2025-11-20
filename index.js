@@ -80,6 +80,13 @@ const productSchema = new mongoose.Schema({
 
 const Product = mongoose.model('Product', productSchema);
 
+// Drop problematic index if it exists
+Product.collection.dropIndex("product_id_1").then(() => {
+  console.log('Dropped product_id index');
+}).catch(err => {
+  console.log('Index not found or already dropped:', err.message);
+});
+
 // Routes
 
 // Root route - check authentication
