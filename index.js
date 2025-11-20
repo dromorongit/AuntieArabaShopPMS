@@ -107,14 +107,18 @@ app.get('/dashboard', (req, res) => {
 // Login route
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
+  console.log('Login attempt for:', username);
+
   // Admin credentials
   const adminUsername = 'admin@shopauntiearaba';
   const adminPassword = 'auntiearaba123';
 
   if (username === adminUsername && password === adminPassword) {
     req.session.loggedIn = true;
+    console.log('Login successful, session set');
     res.status(200).send();
   } else {
+    console.log('Login failed: invalid credentials');
     res.status(401).send();
   }
 });
