@@ -4,6 +4,7 @@ const cors = require('cors');
 const multer = require('multer');
 const session = require('express-session');
 const bcrypt = require('bcryptjs');
+const fs = require('fs');
 
 // Connect to MongoDB
 const mongoUri = process.env.MONGODB_URI || process.env.DATABASE_URL;
@@ -32,7 +33,11 @@ app.use(session({
 // Multer setup for file uploads
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    const uploadDir = 'uploads/';
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
     cb(null, Date.now() + '-' + file.originalname);
@@ -124,6 +129,16 @@ app.post('/products', upload.fields([{ name: 'cover_image', maxCount: 1 }, { nam
     data.categories = data.categories ? data.categories.split(',').map(c => c.trim()).filter(c => c) : [];
     data.sections = data.sections ? data.sections.split(',').map(s => s.trim()).filter(s => s) : [];
     data.promo = data.promo === 'true';
+
+    // Convert numeric fields
+    data.price_ghc = parseFloat(data.price_ghc);
+    if (isNaN(data.price_ghc)) data.price_ghc = 0;
+
+    if (data.promo_price) {
+      data.promo_price = parseFloat(data.promo_price);
+      if (isNaN(data.promo_price)) data.promo_price = undefined;
+    }
+
     if (req.files.cover_image) data.cover_image = req.files.cover_image[0].path;
     if (req.files.other_images) data.other_images = req.files.other_images.map(file => file.path);
 
@@ -131,6 +146,7 @@ app.post('/products', upload.fields([{ name: 'cover_image', maxCount: 1 }, { nam
     await product.save();
     res.status(201).json(product);
   } catch (error) {
+    console.error('Error saving product:', error);
     res.status(500).json({ error: error.message });
   }
 });
@@ -144,6 +160,16 @@ app.put('/products/:id', upload.fields([{ name: 'cover_image', maxCount: 1 }, { 
     data.categories = data.categories ? data.categories.split(',').map(c => c.trim()).filter(c => c) : [];
     data.sections = data.sections ? data.sections.split(',').map(s => s.trim()).filter(s => s) : [];
     data.promo = data.promo === 'true';
+
+    // Convert numeric fields
+    data.price_ghc = parseFloat(data.price_ghc);
+    if (isNaN(data.price_ghc)) data.price_ghc = 0;
+
+    if (data.promo_price) {
+      data.promo_price = parseFloat(data.promo_price);
+      if (isNaN(data.promo_price)) data.promo_price = undefined;
+    }
+
     if (req.files.cover_image) data.cover_image = req.files.cover_image[0].path;
     if (req.files.other_images) data.other_images = req.files.other_images.map(file => file.path);
 
@@ -151,6 +177,7 @@ app.put('/products/:id', upload.fields([{ name: 'cover_image', maxCount: 1 }, { 
     if (!product) return res.status(404).json({ error: 'Product not found' });
     res.json(product);
   } catch (error) {
+    console.error('Error updating product:', error);
     res.status(500).json({ error: error.message });
   }
 });
