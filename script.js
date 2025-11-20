@@ -95,7 +95,6 @@ function editProduct(id) {
     document.getElementById('product_name').value = product.product_name || '';
     document.getElementById('cover_image').value = ''; // Can't set file input
     // For other_images, can't set
-    document.getElementById('sizes').value = product.sizes || [];
     setSelectMultiple('sizes', product.sizes || []);
     document.getElementById('colors').value = (product.colors || []).join(', ');
     document.getElementById('fabric_type').value = product.fabric_type || '';
