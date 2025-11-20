@@ -24,10 +24,17 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Session configuration
 app.use(session({
-  secret: 'your-secret-key', // Change this to a secure key
+  secret: process.env.SESSION_SECRET || 'auntie-araba-admin-secret-key-2024',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
 }));
 
 // Multer setup for file uploads
@@ -45,8 +52,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Serve static files
-app.use(express.static('.'));
+// Serve static files (CSS, JS, and uploads)
+app.use('/style.css', express.static('style.css'));
+app.use('/script.js', express.static('script.js'));
+app.use('/login.js', express.static('login.js'));
+app.use('/uploads', express.static('uploads'));
 
 // Product Model
 const productSchema = new mongoose.Schema({
@@ -72,18 +82,24 @@ const Product = mongoose.model('Product', productSchema);
 
 // Root route - check authentication
 app.get('/', (req, res) => {
+  console.log('Root route accessed, session loggedIn:', req.session.loggedIn);
   if (req.session.loggedIn) {
+    console.log('Redirecting to dashboard');
     res.redirect('/dashboard');
   } else {
+    console.log('Serving login page');
     res.sendFile(__dirname + '/login.html');
   }
 });
 
 // Serve dashboard - requires authentication
 app.get('/dashboard', (req, res) => {
+  console.log('Dashboard route accessed, session loggedIn:', req.session.loggedIn);
   if (req.session.loggedIn) {
+    console.log('Serving dashboard');
     res.sendFile(__dirname + '/index.html');
   } else {
+    console.log('Redirecting to login');
     res.redirect('/');
   }
 });

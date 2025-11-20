@@ -234,6 +234,7 @@ function logout() {
     })
     .then(response => {
       if (response.ok) {
+        // Clear any local session data and redirect
         window.location.href = '/';
       } else {
         alert('Logout failed');
