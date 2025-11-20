@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return response.json();
     })
     .then(data => {
-      alert('Product updated successfully!');
+      showSuccessNotification('Product updated successfully!');
       closeEditModal();
       loadProducts();
     })
@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return response.json();
     })
     .then(data => {
-      alert('Product added successfully!');
+      showSuccessNotification('Product added successfully!');
       addProductForm.reset();  // Clear form
       loadProducts();
     })
@@ -215,6 +215,18 @@ function closeEditModal() {
   editingId = null;
 }
 
+function showSuccessNotification(message) {
+  const notification = document.getElementById('successModal');
+  const messageElement = document.getElementById('successMessage');
+  messageElement.textContent = message;
+  notification.style.display = 'block';
+
+  // Auto-hide after 3 seconds
+  setTimeout(() => {
+    notification.style.display = 'none';
+  }, 3000);
+}
+
 function setSelectMultiple(selectId, values) {
   const select = document.getElementById(selectId);
   Array.from(select.options).forEach(option => {
@@ -249,7 +261,7 @@ function confirmDelete() {
   })
   .then(response => {
     if (response.ok) {
-      alert('Product deleted successfully!');
+      showSuccessNotification('Product deleted successfully!');
       loadProducts();
       cancelDelete();
     } else {
