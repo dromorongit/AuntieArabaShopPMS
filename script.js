@@ -1,11 +1,14 @@
 let editingId = null;
+let deletingId = null;
+let deletingProductName = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   const addProductForm = document.getElementById('addProductForm');
   const editProductForm = document.getElementById('editProductForm');
   const promoCheckbox = document.getElementById('promo');
   const editPromoCheckbox = document.getElementById('edit_promo');
-  const modal = document.getElementById('editModal');
+  const editModal = document.getElementById('editModal');
+  const deleteModal = document.getElementById('deleteModal');
   const modalClose = document.querySelector('.modal-close');
 
   // Handle promo toggle for add form
@@ -31,8 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Modal close events
   modalClose.addEventListener('click', closeEditModal);
   window.addEventListener('click', (event) => {
-    if (event.target === modal) {
+    if (event.target === editModal) {
       closeEditModal();
+    }
+    if (event.target === deleteModal) {
+      cancelDelete();
     }
   });
 
@@ -157,7 +163,7 @@ function loadProducts() {
         </div>
         <div class="product-actions">
           <button onclick="editProduct('${product._id}')" class="btn btn-edit">Edit</button>
-          <button onclick="deleteProduct('${product._id}')" class="btn btn-delete">Delete</button>
+          <button onclick="deleteProduct('${product._id}', '${product.product_name}')" class="btn btn-delete">Delete</button>
         </div>
       `;
       container.appendChild(div);
@@ -216,22 +222,42 @@ function setSelectMultiple(selectId, values) {
   });
 }
 
-function deleteProduct(id) {
-  if (confirm('Are you sure you want to delete this product?')) {
-    fetch(`/products/${id}`, {
-      method: 'DELETE',
-    })
-    .then(response => {
-      if (response.ok) {
-        alert('Product deleted successfully!');
-        loadProducts();
-      } else {
-        alert('Failed to delete product.');
-      }
-    })
-    .catch(error => {
-      console.error('Error deleting product:', error);
+function deleteProduct(id, productName) {
+  deletingId = id;
+  deletingProductName = productName;
+  document.getElementById('deleteProductName').textContent = productName;
+  openDeleteModal();
+}
+
+function openDeleteModal() {
+  document.getElementById('deleteModal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+
+function cancelDelete() {
+  document.getElementById('deleteModal').style.display = 'none';
+  document.body.style.overflow = 'auto';
+  deletingId = null;
+  deletingProductName = null;
+}
+
+function confirmDelete() {
+  if (!deletingId) return;
+
+  fetch(`/products/${deletingId}`, {
+    method: 'DELETE',
+  })
+  .then(response => {
+    if (response.ok) {
+      alert('Product deleted successfully!');
+      loadProducts();
+      cancelDelete();
+    } else {
       alert('Failed to delete product.');
-    });
-  }
+    }
+  })
+  .catch(error => {
+    console.error('Error deleting product:', error);
+    alert('Failed to delete product.');
+  });
 }

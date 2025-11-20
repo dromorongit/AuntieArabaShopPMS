@@ -155,6 +155,27 @@
       </main>
     </div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+      <div class="modal-content delete-modal">
+        <div class="modal-header delete-header">
+          <h2>🗑️ Confirm Deletion</h2>
+        </div>
+        <div class="modal-body delete-body">
+          <div class="delete-warning">
+            <div class="delete-icon">⚠️</div>
+            <p>Are you sure you want to delete this product?</p>
+            <p class="delete-product-name" id="deleteProductName"></p>
+            <p class="delete-note">This action cannot be undone.</p>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" onclick="cancelDelete()">Cancel</button>
+            <button type="button" class="btn btn-delete" onclick="confirmDelete()">Delete Product</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Edit Product Modal -->
     <div id="editModal" class="modal">
       <div class="modal-content">

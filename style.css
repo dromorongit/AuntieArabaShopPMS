@@ -342,6 +342,46 @@ select[multiple] {
   backdrop-filter: blur(5px);
 }
 
+.delete-modal {
+  max-width: 450px;
+  margin: 15% auto;
+}
+
+.delete-header {
+  background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+}
+
+.delete-body {
+  text-align: center;
+  padding: 30px;
+}
+
+.delete-warning {
+  margin-bottom: 25px;
+}
+
+.delete-icon {
+  font-size: 3em;
+  margin-bottom: 15px;
+}
+
+.delete-product-name {
+  font-weight: 600;
+  font-size: 1.1em;
+  color: #2d3748;
+  margin: 10px 0;
+  padding: 10px;
+  background: #f7fafc;
+  border-radius: 8px;
+  border: 2px solid #e2e8f0;
+}
+
+.delete-note {
+  color: #718096;
+  font-size: 0.9em;
+  margin-top: 10px;
+}
+
 .modal-content {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(10px);
