@@ -87,9 +87,9 @@ app.get('/dashboard', (req, res) => {
 // Login route
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  // Simple hardcoded credentials for demo
-  const adminUsername = 'admin';
-  const adminPassword = 'password'; // In production, hash and store in DB
+  // Admin credentials
+  const adminUsername = 'admin@shopauntiearaba';
+  const adminPassword = 'auntiearaba123';
 
   if (username === adminUsername && password === adminPassword) {
     req.session.loggedIn = true;
