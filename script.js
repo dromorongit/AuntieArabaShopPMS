@@ -8,12 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle promo toggle
   promoCheckbox.addEventListener('change', () => {
+    const promoGroup = document.getElementById('promo_price_group');
     if (promoCheckbox.checked) {
-      promoPriceLabel.style.display = 'block';
-      promoPriceInput.style.display = 'block';
+      promoGroup.style.display = 'block';
     } else {
-      promoPriceLabel.style.display = 'none';
-      promoPriceInput.style.display = 'none';
+      promoGroup.style.display = 'none';
     }
   });
 
@@ -77,15 +76,25 @@ function loadProducts() {
   .then(res => res.json())
   .then(products => {
     const container = document.getElementById('products');
+    const totalProducts = document.getElementById('total-products');
     container.innerHTML = '';
+    totalProducts.textContent = products.length;
+
     products.forEach(product => {
       const div = document.createElement('div');
-      div.className = 'product-item';
+      div.className = 'product-card';
       div.innerHTML = `
-        <h3>${product.product_name}</h3>
-        <p>Price: ${product.price_ghc}</p>
-        <button onclick="editProduct('${product._id}')">Edit</button>
-        <button onclick="deleteProduct('${product._id}')">Delete</button>
+        <h3 class="product-name">${product.product_name}</h3>
+        <p class="product-price">GHC ${product.price_ghc}</p>
+        <div class="product-details">
+          ${product.sizes ? product.sizes.map(size => `<span class="detail-tag">${size}</span>`).join('') : ''}
+          ${product.stock_status ? `<span class="detail-tag">${product.stock_status}</span>` : ''}
+          ${product.promo ? `<span class="detail-tag" style="background: #fef5e7; color: #d69e2e;">Promo</span>` : ''}
+        </div>
+        <div class="product-actions">
+          <button onclick="editProduct('${product._id}')" class="btn btn-edit">Edit</button>
+          <button onclick="deleteProduct('${product._id}')" class="btn btn-delete">Delete</button>
+        </div>
       `;
       container.appendChild(div);
     });
@@ -111,13 +120,12 @@ function editProduct(id) {
     setSelectMultiple('categories', product.categories || []);
     setSelectMultiple('sections', product.sections || []);
     document.getElementById('promo').checked = product.promo || false;
+    const promoGroup = document.getElementById('promo_price_group');
     if (product.promo) {
-      document.getElementById('promo_price_label').style.display = 'block';
-      document.getElementById('promo_price').style.display = 'block';
+      promoGroup.style.display = 'block';
       document.getElementById('promo_price').value = product.promo_price || '';
     } else {
-      document.getElementById('promo_price_label').style.display = 'none';
-      document.getElementById('promo_price').style.display = 'none';
+      promoGroup.style.display = 'none';
     }
 
     editingId = id;

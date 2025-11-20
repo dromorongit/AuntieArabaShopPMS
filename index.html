@@ -7,99 +7,154 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Product Management Dashboard</h1>
-  
-  <section id="add-product">
-    <h2 id="form-title">Add New Product</h2>
-    <form id="addProductForm" enctype="multipart/form-data">
-      <label for="product_name">Product Name:</label>
-      <input type="text" id="product_name" required><br>
+  <div class="container">
+    <header class="header">
+      <h1>Auntie Araba</h1>
+      <p class="subtitle">Product Management System</p>
+    </header>
 
-      <label for="cover_image">Cover Image:</label>
-      <input type="file" id="cover_image" name="cover_image" accept="image/*"><br>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <h2>Dashboard</h2>
+        <p>Welcome to your product management system. Add, edit, and manage your fashion items efficiently.</p>
+        <div style="margin-top: 20px;">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+            <span style="color: #48bb78;">●</span>
+            <span>Total Products: <strong id="total-products">0</strong></span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="color: #667eea;">●</span>
+            <span>System Status: <strong style="color: #48bb78;">Online</strong></span>
+          </div>
+        </div>
+      </aside>
 
-      <label for="other_images">Other Images:</label>
-      <input type="file" id="other_images" name="other_images" accept="image/*" multiple><br>
-      
-      <label for="sizes">Sizes:</label>
-      <select id="sizes" multiple>
-        <option value="S">S</option>
-        <option value="L">L</option>
-        <option value="XL">XL</option>
-        <option value="2XL">2XL</option>
-        <option value="3XL">3XL</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-        <option value="13">13</option>
-        <option value="14">14</option>
-        <option value="15">15</option>
-        <option value="16">16</option>
-        <option value="17">17</option>
-        <option value="18">18</option>
-        <option value="19">19</option>
-        <option value="20">20</option>
-      </select><br>
-      
-      <label for="colors">Colors (comma-separated):</label>
-      <input type="text" id="colors" placeholder="e.g., Red, Blue, Green"><br>
-      
-      <label for="fabric_type">Fabric Type:</label>
-      <input type="text" id="fabric_type"><br>
-      
-      <label for="short_description">Short Description:</label>
-      <textarea id="short_description" required></textarea><br>
-      
-      <label for="long_description">Long Description:</label>
-      <textarea id="long_description"></textarea><br>
-      
-      <label for="price_ghc">Price (GHC):</label>
-      <input type="number" id="price_ghc" required><br>
-      
-      <label for="stock_status">Stock Status:</label>
-      <select id="stock_status">
-        <option value="In Stock">In Stock</option>
-        <option value="Out of Stock">Out of Stock</option>
-      </select><br>
-      
-      <label for="promo">Promo:</label>
-      <input type="checkbox" id="promo"> Enable Promo<br>
-      <label for="promo_price" id="promo_price_label" style="display: none;">Promo Price (GHC):</label>
-      <input type="number" id="promo_price" style="display: none;"><br>
-      
-      <label for="categories">Categories:</label>
-      <select id="categories" multiple>
-        <option value="Ladies Basic Tops">Ladies Basic Tops</option>
-        <option value="Crop Tops">Crop Tops</option>
-        <option value="Night Wear">Night Wear</option>
-        <option value="Bum Shorts">Bum Shorts</option>
-        <option value="2-in-1 Night Wears">2-in-1 Night Wears</option>
-        <option value="2-in-1 Tops and Downs">2-in-1 Tops and Downs</option>
-        <option value="Elegant Dresses">Elegant Dresses</option>
-        <option value="Stylish Dresses">Stylish Dresses</option>
-        <option value="Office Dresses">Office Dresses</option>
-        <option value="Panties">Panties</option>
-        <option value="Hair Bands">Hair Bands</option>
-        <option value="Unisex NFL Jerseys">Unisex NFL Jerseys</option>
-        <option value="Football Jerseys">Football Jerseys</option>
-        <option value="Other Ladies Fashion Items">Other Ladies Fashion Items</option>
-      </select><br>
+      <main class="main-content">
+        <section id="add-product" class="section">
+          <h2 id="form-title">Add New Product</h2>
+          <form id="addProductForm" enctype="multipart/form-data">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="product_name">Product Name</label>
+                <input type="text" id="product_name" required>
+              </div>
 
-      <label for="sections">Sections:</label>
-      <select id="sections" multiple>
-        <option value="New Arrivals">New Arrivals</option>
-        <option value="Top Deals">Top Deals</option>
-        <option value="Fast Selling Products">Fast Selling Products</option>
-      </select><br>
+              <div class="form-group">
+                <label for="cover_image">Cover Image</label>
+                <input type="file" id="cover_image" name="cover_image" accept="image/*">
+              </div>
 
-      <button type="submit">Add Product</button>
-    </form>
-  </section>
+              <div class="form-group">
+                <label for="other_images">Other Images</label>
+                <input type="file" id="other_images" name="other_images" accept="image/*" multiple>
+              </div>
 
-  <section id="product-list">
-    <h2>Product List</h2>
-    <div id="products"></div>
-  </section>
+              <div class="form-group">
+                <label for="sizes">Sizes</label>
+                <select id="sizes" multiple>
+                  <option value="S">S</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="2XL">2XL</option>
+                  <option value="3XL">3XL</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                  <option value="13">13</option>
+                  <option value="14">14</option>
+                  <option value="15">15</option>
+                  <option value="16">16</option>
+                  <option value="17">17</option>
+                  <option value="18">18</option>
+                  <option value="19">19</option>
+                  <option value="20">20</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="colors">Colors (comma-separated)</label>
+                <input type="text" id="colors" placeholder="e.g., Red, Blue, Green">
+              </div>
+
+              <div class="form-group">
+                <label for="fabric_type">Fabric Type</label>
+                <input type="text" id="fabric_type">
+              </div>
+
+              <div class="form-group">
+                <label for="short_description">Short Description</label>
+                <textarea id="short_description" required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="long_description">Long Description</label>
+                <textarea id="long_description"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="price_ghc">Price (GHC)</label>
+                <input type="number" id="price_ghc" required>
+              </div>
+
+              <div class="form-group">
+                <label for="stock_status">Stock Status</label>
+                <select id="stock_status">
+                  <option value="In Stock">In Stock</option>
+                  <option value="Out of Stock">Out of Stock</option>
+                </select>
+              </div>
+
+              <div class="form-group checkbox-group">
+                <input type="checkbox" id="promo">
+                <label for="promo">Enable Promo</label>
+              </div>
+
+              <div class="form-group" id="promo_price_group" style="display: none;">
+                <label for="promo_price">Promo Price (GHC)</label>
+                <input type="number" id="promo_price">
+              </div>
+
+              <div class="form-group">
+                <label for="categories">Categories</label>
+                <select id="categories" multiple>
+                  <option value="Ladies Basic Tops">Ladies Basic Tops</option>
+                  <option value="Crop Tops">Crop Tops</option>
+                  <option value="Night Wear">Night Wear</option>
+                  <option value="Bum Shorts">Bum Shorts</option>
+                  <option value="2-in-1 Night Wears">2-in-1 Night Wears</option>
+                  <option value="2-in-1 Tops and Downs">2-in-1 Tops and Downs</option>
+                  <option value="Elegant Dresses">Elegant Dresses</option>
+                  <option value="Stylish Dresses">Stylish Dresses</option>
+                  <option value="Office Dresses">Office Dresses</option>
+                  <option value="Panties">Panties</option>
+                  <option value="Hair Bands">Hair Bands</option>
+                  <option value="Unisex NFL Jerseys">Unisex NFL Jerseys</option>
+                  <option value="Football Jerseys">Football Jerseys</option>
+                  <option value="Other Ladies Fashion Items">Other Ladies Fashion Items</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="sections">Sections</label>
+                <select id="sections" multiple>
+                  <option value="New Arrivals">New Arrivals</option>
+                  <option value="Top Deals">Top Deals</option>
+                  <option value="Fast Selling Products">Fast Selling Products</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Add Product</button>
+          </form>
+        </section>
+
+        <section id="product-list" class="section">
+          <h2>Product List</h2>
+          <div id="products" class="products-grid"></div>
+        </section>
+      </main>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
