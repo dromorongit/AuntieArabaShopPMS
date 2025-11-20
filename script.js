@@ -227,6 +227,25 @@ function showSuccessNotification(message) {
   }, 3000);
 }
 
+function logout() {
+  if (confirm('Are you sure you want to logout?')) {
+    fetch('/logout', {
+      method: 'POST',
+    })
+    .then(response => {
+      if (response.ok) {
+        window.location.href = '/';
+      } else {
+        alert('Logout failed');
+      }
+    })
+    .catch(error => {
+      console.error('Error logging out:', error);
+      alert('Logout failed');
+    });
+  }
+}
+
 function setSelectMultiple(selectId, values) {
   const select = document.getElementById(selectId);
   Array.from(select.options).forEach(option => {

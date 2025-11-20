@@ -70,12 +70,16 @@ const Product = mongoose.model('Product', productSchema);
 
 // Routes
 
-// Serve login page
+// Root route - check authentication
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/login.html');
+  if (req.session.loggedIn) {
+    res.redirect('/dashboard');
+  } else {
+    res.sendFile(__dirname + '/login.html');
+  }
 });
 
-// Serve dashboard
+// Serve dashboard - requires authentication
 app.get('/dashboard', (req, res) => {
   if (req.session.loggedIn) {
     res.sendFile(__dirname + '/index.html');
@@ -97,6 +101,18 @@ app.post('/login', async (req, res) => {
   } else {
     res.status(401).send();
   }
+});
+
+// Logout route
+app.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      res.status(500).send();
+    } else {
+      res.status(200).send();
+    }
+  });
 });
 
 // Get all products
