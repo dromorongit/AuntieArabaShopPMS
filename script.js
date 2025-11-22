@@ -162,19 +162,46 @@ function loadProducts() {
     products.forEach(product => {
       const div = document.createElement('div');
       div.className = 'product-card';
+      const stockQty = product.stock_quantity || 0;
+      const lowThreshold = product.low_stock_threshold || 5;
+      const isLowStock = stockQty <= lowThreshold;
+
       div.innerHTML = `
-        <h3 class="product-name">${product.product_name}</h3>
-        <p class="product-price">GHC ${product.price_ghc}</p>
-        <div class="product-details">
-          ${product.sizes ? product.sizes.map(size => `<span class="detail-tag">${size}</span>`).join('') : ''}
-          <span class="detail-tag">Stock: ${product.stock_quantity || 0}</span>
-          ${product.stock_status ? `<span class="detail-tag">${product.stock_status}</span>` : ''}
-          ${(product.stock_quantity || 0) <= (product.low_stock_threshold || 5) ? `<span class="detail-tag" style="background: #fed7d7; color: #c53030;">Low Stock</span>` : ''}
-          ${product.promo ? `<span class="detail-tag" style="background: #fef5e7; color: #d69e2e;">Promo</span>` : ''}
+        <div class="product-card-header">
+          <h3 class="product-name">${product.product_name}</h3>
+          <span class="product-status ${product.stock_status === 'In Stock' ? 'in-stock' : 'out-of-stock'}">
+            ${product.stock_status}
+          </span>
         </div>
+
+        <p class="product-price">GHS ${product.price_ghc}</p>
+
+        <div class="product-meta">
+          <div class="meta-item">
+            <div class="meta-label">Category</div>
+            <div class="meta-value">${product.categories ? product.categories[0] : 'N/A'}</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Fabric</div>
+            <div class="meta-value">${product.fabric_type || 'N/A'}</div>
+          </div>
+        </div>
+
+        <div class="inventory-info">
+          <div class="inventory-row">
+            <span class="inventory-label">Current Stock</span>
+            <span class="inventory-value">${stockQty} units</span>
+          </div>
+          <div class="inventory-row">
+            <span class="inventory-label">Low Stock Alert</span>
+            <span class="inventory-value">${lowThreshold} units</span>
+          </div>
+          ${isLowStock ? `<div class="inventory-alert">⚠️ Low stock alert triggered</div>` : ''}
+        </div>
+
         <div class="product-actions">
-          <button onclick="editProduct('${product._id}')" class="btn btn-edit">Edit</button>
-          <button onclick="deleteProduct('${product._id}', '${product.product_name}')" class="btn btn-delete">Delete</button>
+          <button onclick="editProduct('${product._id}')" class="btn btn-success btn-sm">Edit</button>
+          <button onclick="deleteProduct('${product._id}', '${product.product_name}')" class="btn btn-danger btn-sm">Delete</button>
         </div>
       `;
       container.appendChild(div);
@@ -312,25 +339,21 @@ function loadLowStockAlerts() {
   .then(res => res.json())
   .then(products => {
     const lowStockCount = products.length;
-    const sidebar = document.querySelector('.sidebar');
-    let lowStockElement = document.getElementById('low-stock-alert');
+    const lowStockValue = document.getElementById('low-stock-count');
+    const lowStockChange = document.getElementById('low-stock-change');
 
-    if (!lowStockElement) {
-      lowStockElement = document.createElement('div');
-      lowStockElement.id = 'low-stock-alert';
-      lowStockElement.style.marginTop = '10px';
-      sidebar.appendChild(lowStockElement);
+    if (lowStockValue) {
+      lowStockValue.textContent = lowStockCount;
     }
 
-    if (lowStockCount > 0) {
-      lowStockElement.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="color: #e53e3e;">●</span>
-          <span>Low Stock Alerts: <strong style="color: #e53e3e;">${lowStockCount}</strong></span>
-        </div>
-      `;
-    } else {
-      lowStockElement.innerHTML = '';
+    if (lowStockChange) {
+      if (lowStockCount > 0) {
+        lowStockChange.textContent = 'Action Required';
+        lowStockChange.style.color = 'var(--warning-color)';
+      } else {
+        lowStockChange.textContent = 'All Good';
+        lowStockChange.style.color = 'var(--success-color)';
+      }
     }
   })
   .catch(error => console.error('Error loading low stock alerts:', error));

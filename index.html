@@ -7,54 +7,96 @@
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <h1>Auntie Araba</h1>
-      <p class="subtitle">Product Management System</p>
-    </header>
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo-section">
+          <div class="logo-icon">AA</div>
+          <div class="logo-text">
+            <h1>Auntie Araba</h1>
+            <p>Product Management System</p>
+          </div>
+        </div>
+        <div class="user-menu">
+          <div class="user-info">
+            <div class="user-avatar">A</div>
+            <div class="user-details">
+              <h4>Admin</h4>
+              <p>Administrator</p>
+            </div>
+          </div>
+          <button onclick="logout()" class="btn btn-outline btn-sm">
+            <span>Logout</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
 
+  <div class="container">
     <div class="dashboard">
       <aside class="sidebar">
-        <h2>Dashboard</h2>
-        <p>Welcome to your product management system. Add, edit, and manage your fashion items efficiently.</p>
-        <div style="margin-top: 20px;">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
-            <span style="color: #48bb78;">●</span>
-            <span>Total Products: <strong id="total-products">0</strong></span>
+        <div class="sidebar-header">
+          <div class="sidebar-icon">📊</div>
+          <h2>Dashboard</h2>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Total Products</span>
+            <div class="metric-icon">📦</div>
           </div>
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 20px;">
-            <span style="color: #667eea;">●</span>
-            <span>System Status: <strong style="color: #48bb78;">Online</strong></span>
+          <div class="metric-value" id="total-products">0</div>
+          <div class="metric-change" style="color: var(--success-color);">Active</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">Low Stock Alerts</span>
+            <div class="metric-icon">⚠️</div>
           </div>
-          <button onclick="logout()" class="btn btn-secondary" style="width: 100%;">
-            <span>🚪</span> Logout
-          </button>
+          <div class="metric-value" id="low-stock-count">0</div>
+          <div class="metric-change" id="low-stock-change" style="color: var(--warning-color);">Monitor</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header">
+            <span class="metric-title">System Status</span>
+            <div class="metric-icon">🟢</div>
+          </div>
+          <div class="metric-value" style="font-size: 16px;">Online</div>
+          <div class="metric-change" style="color: var(--success-color);">Operational</div>
         </div>
       </aside>
 
-      <main class="main-content">
-        <section id="add-product" class="section">
-          <h2 id="form-title">Add New Product</h2>
-          <form id="addProductForm" enctype="multipart/form-data">
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="product_name">Product Name</label>
-                <input type="text" id="product_name" required>
-              </div>
+       <main class="main-content">
+         <section id="add-product" class="content-section">
+           <div class="section-header">
+             <h2 class="section-title" id="form-title">
+               <span class="section-icon">➕</span>
+               Add New Product
+             </h2>
+           </div>
+           <form id="addProductForm" enctype="multipart/form-data">
+             <div class="form-grid">
+               <div class="form-group">
+                 <label class="form-label" for="product_name">Product Name</label>
+                 <input type="text" class="form-input" id="product_name" required>
+               </div>
 
-              <div class="form-group">
-                <label for="cover_image">Cover Image</label>
-                <input type="file" id="cover_image" name="cover_image" accept="image/*">
-              </div>
+               <div class="form-group">
+                 <label class="form-label" for="cover_image">Cover Image</label>
+                 <input type="file" class="form-input" id="cover_image" name="cover_image" accept="image/*">
+               </div>
 
-              <div class="form-group">
-                <label for="other_images">Other Images</label>
-                <input type="file" id="other_images" name="other_images" accept="image/*" multiple>
-              </div>
+               <div class="form-group">
+                 <label class="form-label" for="other_images">Other Images</label>
+                 <input type="file" class="form-input" id="other_images" name="other_images" accept="image/*" multiple>
+               </div>
 
-              <div class="form-group">
-                <label for="sizes">Sizes</label>
-                <select id="sizes" multiple>
+               <div class="form-group">
+                 <label class="form-label" for="sizes">Sizes</label>
+                 <select class="form-select" id="sizes" multiple>
                   <option value="S">S</option>
                   <option value="L">L</option>
                   <option value="XL">XL</option>
@@ -74,59 +116,61 @@
                 </select>
               </div>
 
-              <div class="form-group">
-                <label for="colors">Colors (comma-separated)</label>
-                <input type="text" id="colors" placeholder="e.g., Red, Blue, Green">
-              </div>
+               <div class="form-group">
+                 <label class="form-label" for="colors">Colors (comma-separated)</label>
+                 <input type="text" class="form-input" id="colors" placeholder="e.g., Red, Blue, Green">
+               </div>
 
-              <div class="form-group">
-                <label for="fabric_type">Fabric Type</label>
-                <input type="text" id="fabric_type">
-              </div>
+               <div class="form-group">
+                 <label class="form-label" for="fabric_type">Fabric Type</label>
+                 <input type="text" class="form-input" id="fabric_type">
+               </div>
 
-              <div class="form-group">
-                <label for="short_description">Short Description</label>
-                <textarea id="short_description" required></textarea>
-              </div>
+               <div class="form-group">
+                 <label class="form-label" for="short_description">Short Description</label>
+                 <textarea class="form-textarea" id="short_description" required></textarea>
+               </div>
 
-              <div class="form-group">
-                <label for="long_description">Long Description</label>
-                <textarea id="long_description"></textarea>
-              </div>
+               <div class="form-group">
+                 <label class="form-label" for="long_description">Long Description</label>
+                 <textarea class="form-textarea" id="long_description"></textarea>
+               </div>
 
-              <div class="form-group">
-                <label for="price_ghc">Price (GHC)</label>
-                <input type="number" id="price_ghc" required>
-              </div>
+               <div class="form-group">
+                 <label class="form-label" for="price_ghc">Price (GHC)</label>
+                 <input type="number" class="form-input" id="price_ghc" required>
+               </div>
 
-              <div class="form-group">
-                <label for="stock_quantity">Stock Quantity</label>
-                <input type="number" id="stock_quantity" min="0" value="0">
-              </div>
+               <div class="form-group">
+                 <label class="form-label" for="stock_quantity">Stock Quantity</label>
+                 <input type="number" class="form-input" id="stock_quantity" min="0" value="0">
+               </div>
 
-              <div class="form-group">
-                <label for="low_stock_threshold">Low Stock Alert Threshold</label>
-                <input type="number" id="low_stock_threshold" min="0" value="5">
-              </div>
+               <div class="form-group">
+                 <label class="form-label" for="low_stock_threshold">Low Stock Alert Threshold</label>
+                 <input type="number" class="form-input" id="low_stock_threshold" min="0" value="5">
+               </div>
 
-              <div class="form-group">
-                <label for="stock_status">Stock Status</label>
-                <input type="text" id="stock_status" readonly value="Out of Stock">
-              </div>
+               <div class="form-group">
+                 <label class="form-label" for="stock_status">Stock Status</label>
+                 <input type="text" class="form-input" id="stock_status" readonly value="Out of Stock">
+               </div>
 
-              <div class="form-group checkbox-group">
-                <input type="checkbox" id="promo">
-                <label for="promo">Enable Promo</label>
-              </div>
+               <div class="form-group">
+                 <div class="checkbox-group">
+                   <input type="checkbox" class="checkbox-input" id="promo">
+                   <label class="checkbox-label" for="promo">Enable Promo</label>
+                 </div>
+               </div>
 
-              <div class="form-group" id="promo_price_group" style="display: none;">
-                <label for="promo_price">Promo Price (GHC)</label>
-                <input type="number" id="promo_price">
-              </div>
+               <div class="form-group" id="promo_price_group" style="display: none;">
+                 <label class="form-label" for="promo_price">Promo Price (GHC)</label>
+                 <input type="number" class="form-input" id="promo_price">
+               </div>
 
-              <div class="form-group">
-                <label for="categories">Categories</label>
-                <select id="categories" multiple>
+               <div class="form-group">
+                 <label class="form-label" for="categories">Categories</label>
+                 <select class="form-select" id="categories" multiple>
                   <option value="Ladies Basic Tops">Ladies Basic Tops</option>
                   <option value="Crop Tops">Crop Tops</option>
                   <option value="Night Wear">Night Wear</option>
@@ -144,24 +188,29 @@
                 </select>
               </div>
 
-              <div class="form-group">
-                <label for="sections">Sections</label>
-                <select id="sections" multiple>
-                  <option value="New Arrivals">New Arrivals</option>
-                  <option value="Top Deals">Top Deals</option>
-                  <option value="Fast Selling Products">Fast Selling Products</option>
-                </select>
-              </div>
-            </div>
+               <div class="form-group">
+                 <label class="form-label" for="sections">Sections</label>
+                 <select class="form-select" id="sections" multiple>
+                   <option value="New Arrivals">New Arrivals</option>
+                   <option value="Top Deals">Top Deals</option>
+                   <option value="Fast Selling Products">Fast Selling Products</option>
+                 </select>
+               </div>
+             </div>
 
-            <button type="submit" class="btn btn-primary">Add Product</button>
-          </form>
-        </section>
+             <button type="submit" class="btn btn-primary btn-lg">Add Product</button>
+           </form>
+         </section>
 
-        <section id="product-list" class="section">
-          <h2>Product List</h2>
-          <div id="products" class="products-grid"></div>
-        </section>
+         <section id="product-list" class="content-section">
+           <div class="section-header">
+             <h2 class="section-title">
+               <span class="section-icon">📦</span>
+               Product Inventory
+             </h2>
+           </div>
+           <div id="products" class="products-grid"></div>
+         </section>
       </main>
     </div>
 
