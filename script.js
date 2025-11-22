@@ -14,18 +14,27 @@ document.addEventListener('DOMContentLoaded', () => {
   // Mobile menu functionality
   const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
   const sidebar = document.querySelector('.sidebar');
+  const mobileOverlay = document.getElementById('mobile-overlay');
 
-  if (mobileMenuToggle && sidebar) {
-    mobileMenuToggle.addEventListener('click', () => {
+  if (mobileMenuToggle && sidebar && mobileOverlay) {
+    const toggleMobileMenu = () => {
       mobileMenuToggle.classList.toggle('active');
       sidebar.classList.toggle('mobile-open');
-    });
+      mobileOverlay.classList.toggle('active');
+    };
 
-    // Close mobile menu when clicking outside
+    mobileMenuToggle.addEventListener('click', toggleMobileMenu);
+
+    // Close mobile menu when clicking overlay
+    mobileOverlay.addEventListener('click', toggleMobileMenu);
+
+    // Close mobile menu when clicking outside (but not on toggle)
     document.addEventListener('click', (e) => {
-      if (!mobileMenuToggle.contains(e.target) && !sidebar.contains(e.target)) {
-        mobileMenuToggle.classList.remove('active');
-        sidebar.classList.remove('mobile-open');
+      if (!mobileMenuToggle.contains(e.target) &&
+          !sidebar.contains(e.target) &&
+          !mobileOverlay.contains(e.target) &&
+          sidebar.classList.contains('mobile-open')) {
+        toggleMobileMenu();
       }
     });
   }
