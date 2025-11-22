@@ -73,6 +73,8 @@ const productSchema = new mongoose.Schema({
   long_description: String,
   price_ghc: { type: Number, required: true },
   stock_status: { type: String, default: 'In Stock' },
+  stock_quantity: { type: Number, default: 0 },
+  low_stock_threshold: { type: Number, default: 5 },
   promo: { type: Boolean, default: false },
   promo_price: Number,
   categories: [String],
@@ -368,6 +370,11 @@ app.post('/products', upload.fields([{ name: 'cover_image', maxCount: 1 }, { nam
       if (isNaN(data.promo_price)) data.promo_price = undefined;
     }
 
+    // Inventory fields
+    data.stock_quantity = parseInt(data.stock_quantity) || 0;
+    data.low_stock_threshold = parseInt(data.low_stock_threshold) || 5;
+    data.stock_status = data.stock_quantity > 0 ? 'In Stock' : 'Out of Stock';
+
     if (req.files.cover_image) data.cover_image = req.files.cover_image[0].path;
     if (req.files.other_images) data.other_images = req.files.other_images.map(file => file.path);
 
@@ -399,6 +406,11 @@ app.put('/products/:id', upload.fields([{ name: 'cover_image', maxCount: 1 }, { 
       if (isNaN(data.promo_price)) data.promo_price = undefined;
     }
 
+    // Inventory fields
+    data.stock_quantity = parseInt(data.stock_quantity) || 0;
+    data.low_stock_threshold = parseInt(data.low_stock_threshold) || 5;
+    data.stock_status = data.stock_quantity > 0 ? 'In Stock' : 'Out of Stock';
+
     if (req.files.cover_image) data.cover_image = req.files.cover_image[0].path;
     if (req.files.other_images) data.other_images = req.files.other_images.map(file => file.path);
 
@@ -417,6 +429,18 @@ app.delete('/products/:id', async (req, res) => {
     const product = await Product.findByIdAndDelete(req.params.id);
     if (!product) return res.status(404).json({ error: 'Product not found' });
     res.status(200).send();
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get low stock products
+app.get('/products/low-stock', async (req, res) => {
+  try {
+    const products = await Product.find({
+      $expr: { $lte: ['$stock_quantity', '$low_stock_threshold'] }
+    });
+    res.json(products);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

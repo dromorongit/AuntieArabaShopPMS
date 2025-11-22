@@ -31,6 +31,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  // Handle stock quantity changes
+  document.getElementById('stock_quantity').addEventListener('input', updateStockStatus);
+  document.getElementById('edit_stock_quantity').addEventListener('input', updateEditStockStatus);
+
   // Modal close events
   modalClose.addEventListener('click', closeEditModal);
   window.addEventListener('click', (event) => {
@@ -54,7 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('short_description', document.getElementById('edit_short_description').value);
     formData.append('long_description', document.getElementById('edit_long_description').value);
     formData.append('price_ghc', document.getElementById('edit_price_ghc').value);
-    formData.append('stock_status', document.getElementById('edit_stock_status').value);
+    formData.append('stock_quantity', document.getElementById('edit_stock_quantity').value);
+    formData.append('low_stock_threshold', document.getElementById('edit_low_stock_threshold').value);
     formData.append('sizes', Array.from(document.getElementById('edit_sizes').selectedOptions).map(option => option.value).join(','));
     formData.append('colors', document.getElementById('edit_colors').value);
     formData.append('categories', Array.from(document.getElementById('edit_categories').selectedOptions).map(option => option.value).join(','));
@@ -103,7 +108,8 @@ document.addEventListener('DOMContentLoaded', () => {
     formData.append('short_description', document.getElementById('short_description').value);
     formData.append('long_description', document.getElementById('long_description').value);
     formData.append('price_ghc', document.getElementById('price_ghc').value);
-    formData.append('stock_status', document.getElementById('stock_status').value);
+    formData.append('stock_quantity', document.getElementById('stock_quantity').value);
+    formData.append('low_stock_threshold', document.getElementById('low_stock_threshold').value);
     formData.append('sizes', Array.from(document.getElementById('sizes').selectedOptions).map(option => option.value).join(','));
     formData.append('colors', document.getElementById('colors').value);
     formData.append('categories', Array.from(document.getElementById('categories').selectedOptions).map(option => option.value).join(','));
@@ -150,6 +156,9 @@ function loadProducts() {
     container.innerHTML = '';
     totalProducts.textContent = products.length;
 
+    // Load low stock alerts
+    loadLowStockAlerts();
+
     products.forEach(product => {
       const div = document.createElement('div');
       div.className = 'product-card';
@@ -158,7 +167,9 @@ function loadProducts() {
         <p class="product-price">GHC ${product.price_ghc}</p>
         <div class="product-details">
           ${product.sizes ? product.sizes.map(size => `<span class="detail-tag">${size}</span>`).join('') : ''}
+          <span class="detail-tag">Stock: ${product.stock_quantity || 0}</span>
           ${product.stock_status ? `<span class="detail-tag">${product.stock_status}</span>` : ''}
+          ${(product.stock_quantity || 0) <= (product.low_stock_threshold || 5) ? `<span class="detail-tag" style="background: #fed7d7; color: #c53030;">Low Stock</span>` : ''}
           ${product.promo ? `<span class="detail-tag" style="background: #fef5e7; color: #d69e2e;">Promo</span>` : ''}
         </div>
         <div class="product-actions">
@@ -186,7 +197,9 @@ function editProduct(id) {
     document.getElementById('edit_short_description').value = product.short_description || '';
     document.getElementById('edit_long_description').value = product.long_description || '';
     document.getElementById('edit_price_ghc').value = product.price_ghc || '';
-    document.getElementById('edit_stock_status').value = product.stock_status || 'In Stock';
+    document.getElementById('edit_stock_quantity').value = product.stock_quantity || 0;
+    document.getElementById('edit_low_stock_threshold').value = product.low_stock_threshold || 5;
+    document.getElementById('edit_stock_status').value = product.stock_status || 'Out of Stock';
     setSelectMultiple('edit_categories', product.categories || []);
     setSelectMultiple('edit_sections', product.sections || []);
     document.getElementById('edit_promo').checked = product.promo || false;
@@ -292,4 +305,45 @@ function confirmDelete() {
     console.error('Error deleting product:', error);
     alert('Failed to delete product.');
   });
+}
+
+function loadLowStockAlerts() {
+  fetch('/products/low-stock')
+  .then(res => res.json())
+  .then(products => {
+    const lowStockCount = products.length;
+    const sidebar = document.querySelector('.sidebar');
+    let lowStockElement = document.getElementById('low-stock-alert');
+
+    if (!lowStockElement) {
+      lowStockElement = document.createElement('div');
+      lowStockElement.id = 'low-stock-alert';
+      lowStockElement.style.marginTop = '10px';
+      sidebar.appendChild(lowStockElement);
+    }
+
+    if (lowStockCount > 0) {
+      lowStockElement.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="color: #e53e3e;">●</span>
+          <span>Low Stock Alerts: <strong style="color: #e53e3e;">${lowStockCount}</strong></span>
+        </div>
+      `;
+    } else {
+      lowStockElement.innerHTML = '';
+    }
+  })
+  .catch(error => console.error('Error loading low stock alerts:', error));
+}
+
+function updateStockStatus() {
+  const quantity = parseInt(document.getElementById('stock_quantity').value) || 0;
+  const status = quantity > 0 ? 'In Stock' : 'Out of Stock';
+  document.getElementById('stock_status').value = status;
+}
+
+function updateEditStockStatus() {
+  const quantity = parseInt(document.getElementById('edit_stock_quantity').value) || 0;
+  const status = quantity > 0 ? 'In Stock' : 'Out of Stock';
+  document.getElementById('edit_stock_status').value = status;
 }
