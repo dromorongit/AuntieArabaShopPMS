@@ -11,6 +11,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const deleteModal = document.getElementById('deleteModal');
   const modalClose = document.querySelector('.modal-close');
 
+  // Mobile menu functionality
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const sidebar = document.querySelector('.sidebar');
+
+  if (mobileMenuToggle && sidebar) {
+    mobileMenuToggle.addEventListener('click', () => {
+      mobileMenuToggle.classList.toggle('active');
+      sidebar.classList.toggle('mobile-open');
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mobileMenuToggle.contains(e.target) && !sidebar.contains(e.target)) {
+        mobileMenuToggle.classList.remove('active');
+        sidebar.classList.remove('mobile-open');
+      }
+    });
+  }
+
   // Handle promo toggle for add form
   promoCheckbox.addEventListener('change', () => {
     const promoGroup = document.getElementById('promo_price_group');
