@@ -24,7 +24,8 @@ async function fetchProducts() {
             price: product.promo && product.promo_price ? product.promo_price : product.price_ghc,
             originalPrice: product.promo ? product.price_ghc : null,
             image: product.cover_image ? `${API_BASE}/${product.cover_image}` : 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
-            category: product.categories ? product.categories[0] : 'general',
+            categories: product.categories || [], // Keep all categories as array
+            category: product.categories ? product.categories[0] : 'general', // Keep for backward compatibility
             sections: product.sections || [],
             stock_status: product.stock_status,
             short_description: product.short_description
@@ -301,18 +302,45 @@ function showNotification(message) {
 }
 
 // Category Page Functions
-async function loadCategoryProducts(category) {
+async function loadCategoryProducts(categorySlug) {
     await fetchProducts(); // Ensure products are loaded
     const categoryProducts = [];
 
-    for (const cat in products) {
-        products[cat].forEach(product => {
-            if (product.category === category) {
+    // Map URL slugs to database category names
+    const categoryMapping = {
+        'ladies-tops': 'Ladies Basic Tops',
+        'crop-tops': 'Crop Tops',
+        'night-wear': 'Night Wear',
+        'bum-shorts': 'Bum Shorts',
+        'two-in-one-night': '2-in-1 Night Wears',
+        'two-in-one-tops': '2-in-1 Tops and Downs',
+        'elegant-dresses': 'Elegant Dresses',
+        'stylish-dresses': 'Stylish Dresses',
+        'office-dresses': 'Office Dresses',
+        'panties': 'Panties',
+        'nfl-jerseys': 'Unisex NFL Jerseys',
+        'other-ladies': 'Other Ladies Fashion Items'
+    };
+
+    const targetCategory = categoryMapping[categorySlug];
+
+    if (!targetCategory) {
+        console.warn('Unknown category slug:', categorySlug);
+        return categoryProducts;
+    }
+
+    console.log('Loading products for category:', categorySlug, '->', targetCategory);
+
+    // Filter products from all sections that have this category
+    Object.values(products).forEach(sectionProducts => {
+        sectionProducts.forEach(product => {
+            if (product.categories && product.categories.includes(targetCategory)) {
                 categoryProducts.push(product);
             }
         });
-    }
+    });
 
+    console.log('Found', categoryProducts.length, 'products for category:', targetCategory);
     return categoryProducts;
 }
 
