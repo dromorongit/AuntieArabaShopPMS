@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('loginForm');
   const loginBtn = document.querySelector('.login-btn');
-  const btnText = document.querySelector('.btn-text');
+  const btnSpans = loginBtn.querySelectorAll('span');
 
   loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -10,8 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const password = document.getElementById('password').value;
 
     // Show loading state
-    const originalText = btnText.textContent;
-    btnText.textContent = 'Signing In...';
+    const originalText = btnSpans[0].textContent;
+    btnSpans[0].textContent = 'Signing In...';
+    btnSpans[1].textContent = '';
     loginBtn.disabled = true;
 
     try {
@@ -39,7 +40,8 @@ document.addEventListener('DOMContentLoaded', () => {
       showLoginError('Login failed. Please check your connection and try again.');
     } finally {
       // Reset button state
-      btnText.textContent = originalText;
+      btnSpans[0].textContent = originalText;
+      btnSpans[1].textContent = '→';
       loginBtn.disabled = false;
     }
   });
@@ -56,7 +58,7 @@ function showLoginError(message) {
   const errorDiv = document.createElement('div');
   errorDiv.className = 'login-error';
   errorDiv.innerHTML = `
-    <div style="display: flex; align-items: center; gap: 8px; color: #e53e3e; font-size: 0.9em; margin-top: 15px;">
+    <div style="display: flex; align-items: center; gap: 8px; color: var(--error-color); font-size: 14px; margin-top: 16px;">
       <span>⚠️</span>
       <span>${message}</span>
     </div>
@@ -66,7 +68,7 @@ function showLoginError(message) {
   loginForm.appendChild(errorDiv);
 
   // Shake animation for inputs
-  const inputs = document.querySelectorAll('.login-form input');
+  const inputs = document.querySelectorAll('.login-input');
   inputs.forEach(input => {
     input.style.animation = 'shake 0.5s ease-in-out';
     setTimeout(() => {
