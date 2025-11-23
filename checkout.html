@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Auntie Araba Shop</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1><a href="index.html">Auntie Araba Shop</a></h1>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="cart.html"><i class="fas fa-shopping-cart"></i> Cart <span class="cart-count">0</span></a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="checkout-container">
+        <div class="container">
+            <h2>Checkout</h2>
+
+            <div class="checkout-content">
+                <div class="order-summary">
+                    <h3>Order Summary</h3>
+                    <div id="checkout-items">
+                        <!-- Cart items will be loaded here -->
+                    </div>
+                    <div class="order-totals">
+                        <div class="total-row">
+                            <span>Subtotal:</span>
+                            <span id="checkout-subtotal">GHS 0.00</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Tax (12%):</span>
+                            <span id="checkout-tax">GHS 0.00</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Shipping:</span>
+                            <span>GHS 15.00</span>
+                        </div>
+                        <div class="total-row total">
+                            <span>Total:</span>
+                            <span id="checkout-total">GHS 0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkout-form">
+                    <h3>Customer Information</h3>
+                    <form id="checkout-form">
+                        <div class="form-group">
+                            <label for="customer_name">Full Name *</label>
+                            <input type="text" id="customer_name" name="customer_name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="customer_email">Email Address *</label>
+                            <input type="email" id="customer_email" name="customer_email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="customer_phone">Phone Number *</label>
+                            <input type="tel" id="customer_phone" name="customer_phone" required>
+                        </div>
+
+                        <h4>Shipping Address</h4>
+
+                        <div class="form-group">
+                            <label for="street">Street Address *</label>
+                            <input type="text" id="street" name="street" required>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city">City *</label>
+                                <input type="text" id="city" name="city" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="zipCode">ZIP Code *</label>
+                                <input type="text" id="zipCode" name="zipCode" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="country">Country *</label>
+                            <input type="text" id="country" name="country" value="Ghana" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="order_notes">Order Notes (Optional)</label>
+                            <textarea id="order_notes" name="order_notes" rows="3" placeholder="Any special instructions..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="payment_method">Payment Method</label>
+                            <select id="payment_method" name="payment_method">
+                                <option value="Cash on Delivery">Cash on Delivery</option>
+                                <option value="Mobile Money">Mobile Money</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large">
+                            <i class="fas fa-credit-card"></i> Place Order
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Auntie Araba Shop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="updated_script.js"></script>
+    <script>
+        // Checkout specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCheckoutItems();
+            updateCheckoutSummary();
+
+            const checkoutForm = document.getElementById('checkout-form');
+            checkoutForm.addEventListener('submit', handleOrderSubmission);
+        });
+
+        function loadCheckoutItems() {
+            const checkoutItems = document.getElementById('checkout-items');
+            checkoutItems.innerHTML = '';
+
+            if (cart.length === 0) {
+                checkoutItems.innerHTML = '<p>Your cart is empty</p>';
+                return;
+            }
+
+            cart.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'checkout-item';
+                itemElement.innerHTML = `
+                    <div class="checkout-item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="checkout-item-info">
+                        <h4>${item.name}</h4>
+                        <p>Quantity: ${item.quantity}</p>
+                        <p>GHS ${item.price.toFixed(2)} each</p>
+                    </div>
+                    <div class="checkout-item-total">
+                        GHS ${(item.price * item.quantity).toFixed(2)}
+                    </div>
+                `;
+                checkoutItems.appendChild(itemElement);
+            });
+        }
+
+        function updateCheckoutSummary() {
+            const subtotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.12;
+            const shipping = 15;
+            const total = subtotal + tax + shipping;
+
+            document.getElementById('checkout-subtotal').textContent = `GHS ${subtotal.toFixed(2)}`;
+            document.getElementById('checkout-tax').textContent = `GHS ${tax.toFixed(2)}`;
+            document.getElementById('checkout-total').textContent = `GHS ${total.toFixed(2)}`;
+        }
+
+        async function handleOrderSubmission(e) {
+            e.preventDefault();
+
+            if (cart.length === 0) {
+                showNotification('Your cart is empty!');
+                return;
+            }
+
+            const formData = new FormData(e.target);
+            const customerData = {
+                customer_name: formData.get('customer_name'),
+                customer_email: formData.get('customer_email'),
+                customer_phone: formData.get('customer_phone'),
+                customer_address: {
+                    street: formData.get('street'),
+                    city: formData.get('city'),
+                    country: formData.get('country'),
+                    zipCode: formData.get('zipCode')
+                },
+                items: cart.map(item => ({
+                    product_id: item.id,
+                    product_name: item.name,
+                    quantity: item.quantity,
+                    price: item.price,
+                    image: item.image
+                })),
+                subtotal: parseFloat(document.getElementById('checkout-subtotal').textContent.replace('GHS ', '')),
+                tax: parseFloat(document.getElementById('checkout-tax').textContent.replace('GHS ', '')),
+                shipping: 15,
+                total: parseFloat(document.getElementById('checkout-total').textContent.replace('GHS ', '')),
+                payment_method: formData.get('payment_method'),
+                order_notes: formData.get('order_notes')
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/orders`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(customerData)
+                });
+
+                if (response.ok) {
+                    const order = await response.json();
+                    showNotification('Order placed successfully!');
+
+                    // Clear cart
+                    cart = [];
+                    saveCart();
+                    updateCartCount();
+
+                    // Redirect to order confirmation
+                    setTimeout(() => {
+                        window.location.href = `index.html?order=${order._id}`;
+                    }, 2000);
+                } else {
+                    const error = await response.json();
+                    showNotification('Failed to place order: ' + error.error);
+                }
+            } catch (error) {
+                console.error('Error placing order:', error);
+                showNotification('Error placing order. Please try again.');
+            }
+        }
+    </script>
+</body>
+</html>

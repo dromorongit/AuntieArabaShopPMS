@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
+const { Storage } = require('@google-cloud/storage');
 
 // Connect to MongoDB
 const mongoUri = process.env.MONGODB_URI || process.env.DATABASE_URL;
@@ -21,6 +22,14 @@ if (mongoUri) {
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Initialize Google Cloud Storage
+const storage = new Storage({
+  projectId: process.env.GCP_PROJECT_ID,
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS || undefined,
+});
+const bucketName = process.env.GCS_BUCKET_NAME || 'auntie-araba-shop-uploads';
+const bucket = storage.bucket(bucketName);
 
 // Middleware
 app.use(cors());
@@ -40,26 +49,41 @@ app.use(session({
   }
 }));
 
-// Multer setup for file uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const uploadDir = 'uploads/';
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-    cb(null, uploadDir);
+// Custom Multer storage for Google Cloud Storage
+const multerStorage = multer.memoryStorage();
+const upload = multer({
+  storage: multerStorage,
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB limit
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
 });
-const upload = multer({ storage });
 
-// Serve static files (CSS, JS, and uploads)
+// Function to upload file to GCS
+async function uploadToGCS(file) {
+  const fileName = `${Date.now()}-${file.originalname}`;
+  const fileUpload = bucket.file(fileName);
+
+  const stream = fileUpload.createWriteStream({
+    metadata: {
+      contentType: file.mimetype,
+    },
+    public: true, // Make file publicly accessible
+  });
+
+  return new Promise((resolve, reject) => {
+    stream.on('error', reject);
+    stream.on('finish', () => {
+      const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
+      resolve(publicUrl);
+    });
+    stream.end(file.buffer);
+  });
+}
+
+// Serve static files (CSS, JS)
 app.use('/style.css', express.static('style.css'));
 app.use('/script.js', express.static('script.js'));
 app.use('/login.js', express.static('login.js'));
-app.use('/uploads', express.static('uploads'));
 
 // Product Model
 const productSchema = new mongoose.Schema({
@@ -99,6 +123,35 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', userSchema);
+
+// Order Model
+const orderSchema = new mongoose.Schema({
+  customer_name: { type: String, required: true },
+  customer_email: { type: String, required: true },
+  customer_phone: { type: String, required: true },
+  customer_address: {
+    street: { type: String, required: true },
+    city: { type: String, required: true },
+    country: { type: String, required: true },
+    zipCode: { type: String, required: true }
+  },
+  items: [{
+    product_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    product_name: { type: String, required: true },
+    quantity: { type: Number, required: true },
+    price: { type: Number, required: true },
+    image: String
+  }],
+  subtotal: { type: Number, required: true },
+  tax: { type: Number, required: true },
+  shipping: { type: Number, default: 15 },
+  total: { type: Number, required: true },
+  status: { type: String, default: 'Pending', enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'] },
+  payment_method: { type: String, default: 'Cash on Delivery' },
+  order_notes: String
+}, { timestamps: true });
+
+const Order = mongoose.model('Order', orderSchema);
 
 // JWT Secret
 const JWT_SECRET = process.env.JWT_SECRET || 'auntie-araba-user-secret-key-2024';
@@ -375,8 +428,13 @@ app.post('/products', upload.fields([{ name: 'cover_image', maxCount: 1 }, { nam
     data.low_stock_threshold = parseInt(data.low_stock_threshold) || 5;
     data.stock_status = data.stock_quantity > 0 ? 'In Stock' : 'Out of Stock';
 
-    if (req.files.cover_image) data.cover_image = req.files.cover_image[0].path;
-    if (req.files.other_images) data.other_images = req.files.other_images.map(file => file.path);
+    // Upload images to GCS
+    if (req.files.cover_image && req.files.cover_image[0]) {
+      data.cover_image = await uploadToGCS(req.files.cover_image[0]);
+    }
+    if (req.files.other_images && req.files.other_images.length > 0) {
+      data.other_images = await Promise.all(req.files.other_images.map(file => uploadToGCS(file)));
+    }
 
     const product = new Product(data);
     await product.save();
@@ -411,8 +469,13 @@ app.put('/products/:id', upload.fields([{ name: 'cover_image', maxCount: 1 }, { 
     data.low_stock_threshold = parseInt(data.low_stock_threshold) || 5;
     data.stock_status = data.stock_quantity > 0 ? 'In Stock' : 'Out of Stock';
 
-    if (req.files.cover_image) data.cover_image = req.files.cover_image[0].path;
-    if (req.files.other_images) data.other_images = req.files.other_images.map(file => file.path);
+    // Upload images to GCS
+    if (req.files.cover_image && req.files.cover_image[0]) {
+      data.cover_image = await uploadToGCS(req.files.cover_image[0]);
+    }
+    if (req.files.other_images && req.files.other_images.length > 0) {
+      data.other_images = await Promise.all(req.files.other_images.map(file => uploadToGCS(file)));
+    }
 
     const product = await Product.findByIdAndUpdate(req.params.id, data, { new: true });
     if (!product) return res.status(404).json({ error: 'Product not found' });
@@ -441,6 +504,75 @@ app.get('/products/low-stock', async (req, res) => {
       $expr: { $lte: ['$stock_quantity', '$low_stock_threshold'] }
     });
     res.json(products);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Order Routes
+
+// Create new order
+app.post('/orders', async (req, res) => {
+  try {
+    const orderData = req.body;
+
+    // Validate required fields
+    const requiredFields = ['customer_name', 'customer_email', 'customer_phone', 'customer_address', 'items', 'subtotal', 'tax', 'total'];
+    for (const field of requiredFields) {
+      if (!orderData[field]) {
+        return res.status(400).json({ error: `Missing required field: ${field}` });
+      }
+    }
+
+    // Validate customer address
+    const addressFields = ['street', 'city', 'country', 'zipCode'];
+    for (const field of addressFields) {
+      if (!orderData.customer_address[field]) {
+        return res.status(400).json({ error: `Missing required address field: ${field}` });
+      }
+    }
+
+    const order = new Order(orderData);
+    await order.save();
+    res.status(201).json(order);
+  } catch (error) {
+    console.error('Error creating order:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get all orders (admin only)
+app.get('/orders', async (req, res) => {
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get single order
+app.get('/orders/:id', async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+    res.json(order);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Update order status
+app.put('/orders/:id', async (req, res) => {
+  try {
+    const { status } = req.body;
+    const order = await Order.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
+    );
+    if (!order) return res.status(404).json({ error: 'Order not found' });
+    res.json(order);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

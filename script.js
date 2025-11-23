@@ -121,8 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Load products
+  // Load products and orders
   loadProducts();
+  loadOrders();
 
   // Handle form submission
   addProductForm.addEventListener('submit', (e) => {
@@ -397,4 +398,155 @@ function updateEditStockStatus() {
   const quantity = parseInt(document.getElementById('edit_stock_quantity').value) || 0;
   const status = quantity > 0 ? 'In Stock' : 'Out of Stock';
   document.getElementById('edit_stock_status').value = status;
+}
+
+// Order Management Functions
+function loadOrders() {
+  fetch('/orders')
+    .then(res => res.json())
+    .then(orders => {
+      displayOrders(orders);
+    })
+    .catch(error => console.error('Error loading orders:', error));
+}
+
+function displayOrders(orders) {
+  const tbody = document.getElementById('orders-table-body');
+  tbody.innerHTML = '';
+
+  if (orders.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+          No orders found
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  orders.forEach(order => {
+    const orderDate = new Date(order.createdAt).toLocaleDateString();
+    const itemsText = order.items.map(item => `${item.product_name} (${item.quantity})`).join(', ');
+
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td class="order-id">${order._id.slice(-8)}</td>
+      <td class="customer-name">${order.customer_name}</td>
+      <td class="order-items" title="${itemsText}">${itemsText.length > 50 ? itemsText.substring(0, 50) + '...' : itemsText}</td>
+      <td class="order-total">GHS ${order.total.toFixed(2)}</td>
+      <td>
+        <span class="order-status ${order.status}">${order.status}</span>
+      </td>
+      <td class="order-date">${orderDate}</td>
+      <td class="order-actions">
+        <select class="status-select" onchange="updateOrderStatus('${order._id}', this.value)">
+          <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+          <option value="Processing" ${order.status === 'Processing' ? 'selected' : ''}>Processing</option>
+          <option value="Shipped" ${order.status === 'Shipped' ? 'selected' : ''}>Shipped</option>
+          <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
+          <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="viewOrderDetails('${order._id}')">View</button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+function updateOrderStatus(orderId, newStatus) {
+  fetch(`/orders/${orderId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ status: newStatus })
+  })
+  .then(response => {
+    if (response.ok) {
+      showSuccessNotification('Order status updated successfully!');
+      loadOrders(); // Reload orders to reflect changes
+    } else {
+      alert('Failed to update order status');
+    }
+  })
+  .catch(error => {
+    console.error('Error updating order status:', error);
+    alert('Error updating order status');
+  });
+}
+
+function viewOrderDetails(orderId) {
+  fetch(`/orders/${orderId}`)
+    .then(res => res.json())
+    .then(order => {
+      // Create a modal to show order details
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.style.display = 'block';
+
+      const orderDate = new Date(order.createdAt).toLocaleString();
+      const itemsHtml = order.items.map(item => `
+        <div style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e2e8f0;">
+          <div>
+            <strong>${item.product_name}</strong><br>
+            <small>Quantity: ${item.quantity} × GHS ${item.price.toFixed(2)}</small>
+          </div>
+          <div>GHS ${(item.price * item.quantity).toFixed(2)}</div>
+        </div>
+      `).join('');
+
+      modal.innerHTML = `
+        <div class="modal-content" style="max-width: 600px;">
+          <div class="modal-header">
+            <h2>Order Details - ${order._id.slice(-8)}</h2>
+            <span class="modal-close" onclick="this.closest('.modal').remove()">&times;</span>
+          </div>
+          <div class="modal-body">
+            <div style="margin-bottom: 20px;">
+              <h3>Customer Information</h3>
+              <p><strong>Name:</strong> ${order.customer_name}</p>
+              <p><strong>Email:</strong> ${order.customer_email}</p>
+              <p><strong>Phone:</strong> ${order.customer_phone}</p>
+              <p><strong>Address:</strong> ${order.customer_address.street}, ${order.customer_address.city}, ${order.customer_address.country} ${order.customer_address.zipCode}</p>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+              <h3>Order Items</h3>
+              ${itemsHtml}
+            </div>
+
+            <div style="margin-bottom: 20px;">
+              <h3>Order Summary</h3>
+              <div style="display: flex; justify-content: space-between;"><span>Subtotal:</span><span>GHS ${order.subtotal.toFixed(2)}</span></div>
+              <div style="display: flex; justify-content: space-between;"><span>Tax:</span><span>GHS ${order.tax.toFixed(2)}</span></div>
+              <div style="display: flex; justify-content: space-between;"><span>Shipping:</span><span>GHS ${order.shipping.toFixed(2)}</span></div>
+              <div style="display: flex; justify-content: space-between; font-weight: bold; border-top: 1px solid #e2e8f0; padding-top: 8px;"><span>Total:</span><span>GHS ${order.total.toFixed(2)}</span></div>
+            </div>
+
+            <div style="margin-bottom: 20px;">
+              <h3>Order Information</h3>
+              <p><strong>Status:</strong> <span class="order-status ${order.status}">${order.status}</span></p>
+              <p><strong>Payment Method:</strong> ${order.payment_method}</p>
+              <p><strong>Order Date:</strong> ${orderDate}</p>
+              ${order.order_notes ? `<p><strong>Notes:</strong> ${order.order_notes}</p>` : ''}
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+
+      // Close modal when clicking outside
+      window.addEventListener('click', function closeModal(e) {
+        if (e.target === modal) {
+          modal.remove();
+          window.removeEventListener('click', closeModal);
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Error loading order details:', error);
+      alert('Error loading order details');
+    });
 }
