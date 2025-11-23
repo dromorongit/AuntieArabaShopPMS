@@ -405,12 +405,30 @@ function updateEditStockStatus() {
 
 // Order Management Functions
 function loadOrders() {
+  console.log('Loading orders from:', `${API_BASE}/orders`);
   fetch(`${API_BASE}/orders`)
-    .then(res => res.json())
+    .then(res => {
+      console.log('Orders response status:', res.status);
+      return res.json();
+    })
     .then(orders => {
+      console.log('Orders loaded:', orders.length, 'orders');
       displayOrders(orders);
     })
-    .catch(error => console.error('Error loading orders:', error));
+    .catch(error => {
+      console.error('Error loading orders:', error);
+      // Show error in UI
+      const tbody = document.getElementById('orders-table-body');
+      if (tbody) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 40px; color: red;">
+              Error loading orders: ${error.message}
+            </td>
+          </tr>
+        `;
+      }
+    });
 }
 
 function displayOrders(orders) {

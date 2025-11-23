@@ -207,6 +207,9 @@
                 order_notes: formData.get('order_notes')
             };
 
+            console.log('Submitting order to:', `${API_BASE}/orders`);
+            console.log('Order data:', customerData);
+
             try {
                 const response = await fetch(`${API_BASE}/orders`, {
                     method: 'POST',
@@ -216,8 +219,11 @@
                     body: JSON.stringify(customerData)
                 });
 
+                console.log('Order submission response status:', response.status);
+
                 if (response.ok) {
                     const order = await response.json();
+                    console.log('Order created successfully:', order);
                     showNotification('Order placed successfully!');
 
                     // Clear cart
@@ -231,6 +237,7 @@
                     }, 2000);
                 } else {
                     const error = await response.json();
+                    console.error('Order creation failed:', error);
                     showNotification('Failed to place order: ' + error.error);
                 }
             } catch (error) {
