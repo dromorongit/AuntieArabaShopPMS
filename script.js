@@ -2,6 +2,9 @@ let editingId = null;
 let deletingId = null;
 let deletingProductName = null;
 
+// API Base URL - same as shop frontend
+const API_BASE = 'https://auntiearabashoppms-production.up.railway.app';
+
 document.addEventListener('DOMContentLoaded', () => {
   const addProductForm = document.getElementById('addProductForm');
   const editProductForm = document.getElementById('editProductForm');
@@ -100,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
       formData.append('promo', 'false');
     }
 
-    fetch(`/products/${editingId}`, {
+    fetch(`${API_BASE}/products/${editingId}`, {
       method: 'PUT',
       body: formData,
     })
@@ -152,8 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   
     const method = editingId ? 'PUT' : 'POST';
-    const url = editingId ? `/products/${editingId}` : '/products';
-  
+    const url = editingId ? `${API_BASE}/products/${editingId}` : `${API_BASE}/products`;
+
     fetch(url, {
       method: method,
       body: formData,
@@ -177,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadProducts() {
-  fetch('/products')
+  fetch(`${API_BASE}/products`)
   .then(res => res.json())
   .then(products => {
     const container = document.getElementById('products');
@@ -240,7 +243,7 @@ function loadProducts() {
 }
 
 function editProduct(id) {
-  fetch(`/products/${id}`)
+  fetch(`${API_BASE}/products/${id}`)
   .then(res => res.json())
   .then(product => {
     // Populate edit modal form
@@ -298,7 +301,7 @@ function showSuccessNotification(message) {
 
 function logout() {
   if (confirm('Are you sure you want to logout?')) {
-    fetch('/logout', {
+    fetch(`${API_BASE}/logout`, {
       method: 'POST',
     })
     .then(response => {
@@ -345,7 +348,7 @@ function cancelDelete() {
 function confirmDelete() {
   if (!deletingId) return;
 
-  fetch(`/products/${deletingId}`, {
+  fetch(`${API_BASE}/products/${deletingId}`, {
     method: 'DELETE',
   })
   .then(response => {
@@ -364,7 +367,7 @@ function confirmDelete() {
 }
 
 function loadLowStockAlerts() {
-  fetch('/products/low-stock')
+  fetch(`${API_BASE}/products/low-stock`)
   .then(res => res.json())
   .then(products => {
     const lowStockCount = products.length;
@@ -402,7 +405,7 @@ function updateEditStockStatus() {
 
 // Order Management Functions
 function loadOrders() {
-  fetch('/orders')
+  fetch(`${API_BASE}/orders`)
     .then(res => res.json())
     .then(orders => {
       displayOrders(orders);
@@ -455,7 +458,7 @@ function displayOrders(orders) {
 }
 
 function updateOrderStatus(orderId, newStatus) {
-  fetch(`/orders/${orderId}`, {
+  fetch(`${API_BASE}/orders/${orderId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -477,7 +480,7 @@ function updateOrderStatus(orderId, newStatus) {
 }
 
 function viewOrderDetails(orderId) {
-  fetch(`/orders/${orderId}`)
+  fetch(`${API_BASE}/orders/${orderId}`)
     .then(res => res.json())
     .then(order => {
       // Create a modal to show order details
