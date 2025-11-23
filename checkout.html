@@ -193,7 +193,7 @@
                     zipCode: formData.get('zipCode')
                 },
                 items: cart.map(item => ({
-                    product_id: item.id,
+                    product_id: item._id || item.id, // Use _id if available, fallback to id
                     product_name: item.name,
                     quantity: item.quantity,
                     price: item.price,

@@ -20,6 +20,7 @@ async function fetchProducts() {
         // Map API data to shop format
         const mappedProducts = data.map((product, index) => ({
             id: product._id || index + 1,
+            _id: product._id, // Keep the original MongoDB _id
             name: product.product_name,
             price: product.promo && product.promo_price ? product.promo_price : product.price_ghc,
             originalPrice: product.promo ? product.price_ghc : null,

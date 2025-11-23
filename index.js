@@ -136,7 +136,7 @@ const orderSchema = new mongoose.Schema({
     zipCode: { type: String, required: true }
   },
   items: [{
-    product_id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+    product_id: { type: String, required: true }, // Changed to String for now to debug
     product_name: { type: String, required: true },
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
