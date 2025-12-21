@@ -89,6 +89,7 @@ const productSchema = new mongoose.Schema({
   product_name: { type: String, required: true },
   cover_image: String,
   other_images: [String],
+  video: String,
   sizes: [String],
   colors: [String],
   fabric_type: String,
@@ -404,7 +405,7 @@ app.get('/products/:id', async (req, res) => {
 });
 
 // Add new product
-app.post('/products', upload.fields([{ name: 'cover_image', maxCount: 1 }, { name: 'other_images', maxCount: 10 }]), async (req, res) => {
+app.post('/products', upload.fields([{ name: 'cover_image', maxCount: 1 }, { name: 'other_images', maxCount: 10 }, { name: 'video', maxCount: 1 }]), async (req, res) => {
   try {
     const data = req.body;
     data.sizes = data.sizes ? data.sizes.split(',').map(s => s.trim()).filter(s => s) : [];
@@ -427,12 +428,15 @@ app.post('/products', upload.fields([{ name: 'cover_image', maxCount: 1 }, { nam
     data.low_stock_threshold = parseInt(data.low_stock_threshold) || 5;
     data.stock_status = data.stock_quantity > 0 ? 'In Stock' : 'Out of Stock';
 
-    // Upload images to Cloudinary
+    // Upload images and video to Cloudinary
     if (req.files.cover_image && req.files.cover_image[0]) {
       data.cover_image = await uploadToCloudinary(req.files.cover_image[0]);
     }
     if (req.files.other_images && req.files.other_images.length > 0) {
       data.other_images = await Promise.all(req.files.other_images.map(file => uploadToCloudinary(file)));
+    }
+    if (req.files.video && req.files.video[0]) {
+      data.video = await uploadToCloudinary(req.files.video[0]);
     }
 
     const product = new Product(data);
@@ -445,7 +449,7 @@ app.post('/products', upload.fields([{ name: 'cover_image', maxCount: 1 }, { nam
 });
 
 // Update product
-app.put('/products/:id', upload.fields([{ name: 'cover_image', maxCount: 1 }, { name: 'other_images', maxCount: 10 }]), async (req, res) => {
+app.put('/products/:id', upload.fields([{ name: 'cover_image', maxCount: 1 }, { name: 'other_images', maxCount: 10 }, { name: 'video', maxCount: 1 }]), async (req, res) => {
   try {
     const data = req.body;
     data.sizes = data.sizes ? data.sizes.split(',').map(s => s.trim()).filter(s => s) : [];
@@ -468,12 +472,15 @@ app.put('/products/:id', upload.fields([{ name: 'cover_image', maxCount: 1 }, { 
     data.low_stock_threshold = parseInt(data.low_stock_threshold) || 5;
     data.stock_status = data.stock_quantity > 0 ? 'In Stock' : 'Out of Stock';
 
-    // Upload images to Cloudinary
+    // Upload images and video to Cloudinary
     if (req.files.cover_image && req.files.cover_image[0]) {
       data.cover_image = await uploadToCloudinary(req.files.cover_image[0]);
     }
     if (req.files.other_images && req.files.other_images.length > 0) {
       data.other_images = await Promise.all(req.files.other_images.map(file => uploadToCloudinary(file)));
+    }
+    if (req.files.video && req.files.video[0]) {
+      data.video = await uploadToCloudinary(req.files.video[0]);
     }
 
     const product = await Product.findByIdAndUpdate(req.params.id, data, { new: true });
