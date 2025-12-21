@@ -21,8 +21,10 @@
   "dependencies": {
     "@google-cloud/storage": "^7.17.3",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.8.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-session": "^1.17.3",
     "jsonwebtoken": "^9.0.0",

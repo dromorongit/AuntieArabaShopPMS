@@ -1,3 +1,4 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const express = require('express');
 const cors = require('cors');
@@ -7,7 +8,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const cookieParser = require('cookie-parser');
-const { Storage } = require('@google-cloud/storage');
+const cloudinary = require('cloudinary').v2;
 
 // Connect to MongoDB
 const mongoUri = process.env.MONGODB_URI || process.env.DATABASE_URL;
@@ -23,13 +24,12 @@ if (mongoUri) {
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Initialize Google Cloud Storage
-const storage = new Storage({
-  projectId: process.env.GCP_PROJECT_ID,
-  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS || undefined,
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-const bucketName = process.env.GCS_BUCKET_NAME || 'auntie-araba-shop-uploads';
-const bucket = storage.bucket(bucketName);
 
 // Middleware
 app.use(cors());
@@ -58,25 +58,24 @@ const upload = multer({
   },
 });
 
-// Function to upload file to GCS
-async function uploadToGCS(file) {
-  const fileName = `${Date.now()}-${file.originalname}`;
-  const fileUpload = bucket.file(fileName);
-
-  const stream = fileUpload.createWriteStream({
-    metadata: {
-      contentType: file.mimetype,
-    },
-    public: true, // Make file publicly accessible
-  });
-
+// Function to upload file to Cloudinary
+async function uploadToCloudinary(file) {
   return new Promise((resolve, reject) => {
-    stream.on('error', reject);
-    stream.on('finish', () => {
-      const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
-      resolve(publicUrl);
-    });
-    stream.end(file.buffer);
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'auntie-araba-shop-uploads',
+        public_id: `${Date.now()}-${file.originalname.split('.')[0]}`,
+        resource_type: 'auto',
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.secure_url);
+        }
+      }
+    );
+    uploadStream.end(file.buffer);
   });
 }
 
@@ -428,12 +427,12 @@ app.post('/products', upload.fields([{ name: 'cover_image', maxCount: 1 }, { nam
     data.low_stock_threshold = parseInt(data.low_stock_threshold) || 5;
     data.stock_status = data.stock_quantity > 0 ? 'In Stock' : 'Out of Stock';
 
-    // Upload images to GCS
+    // Upload images to Cloudinary
     if (req.files.cover_image && req.files.cover_image[0]) {
-      data.cover_image = await uploadToGCS(req.files.cover_image[0]);
+      data.cover_image = await uploadToCloudinary(req.files.cover_image[0]);
     }
     if (req.files.other_images && req.files.other_images.length > 0) {
-      data.other_images = await Promise.all(req.files.other_images.map(file => uploadToGCS(file)));
+      data.other_images = await Promise.all(req.files.other_images.map(file => uploadToCloudinary(file)));
     }
 
     const product = new Product(data);
@@ -469,12 +468,12 @@ app.put('/products/:id', upload.fields([{ name: 'cover_image', maxCount: 1 }, { 
     data.low_stock_threshold = parseInt(data.low_stock_threshold) || 5;
     data.stock_status = data.stock_quantity > 0 ? 'In Stock' : 'Out of Stock';
 
-    // Upload images to GCS
+    // Upload images to Cloudinary
     if (req.files.cover_image && req.files.cover_image[0]) {
-      data.cover_image = await uploadToGCS(req.files.cover_image[0]);
+      data.cover_image = await uploadToCloudinary(req.files.cover_image[0]);
     }
     if (req.files.other_images && req.files.other_images.length > 0) {
-      data.other_images = await Promise.all(req.files.other_images.map(file => uploadToGCS(file)));
+      data.other_images = await Promise.all(req.files.other_images.map(file => uploadToCloudinary(file)));
     }
 
     const product = await Product.findByIdAndUpdate(req.params.id, data, { new: true });
