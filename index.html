@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- <meta name="theme-color" content="#2563eb">
- <meta name="apple-mobile-web-app-capable" content="yes">
- <meta name="apple-mobile-web-app-status-bar-style" content="default">
- <title>Auntie Araba Admin Dashboard</title>
- <link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2563eb">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Auntie Araba Admin Dashboard</title>
+  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <header class="header">
@@ -187,20 +187,24 @@
                <div class="form-group">
                  <label class="form-label" for="categories">Categories</label>
                  <select class="form-select" id="categories" multiple>
-                  <option value="Ladies Basic Tops">Ladies Basic Tops</option>
-                  <option value="Crop Tops">Crop Tops</option>
-                  <option value="Night Wear">Night Wear</option>
-                  <option value="Bum Shorts">Bum Shorts</option>
-                  <option value="2-in-1 Night Wears">2-in-1 Night Wears</option>
-                  <option value="2-in-1 Tops and Downs">2-in-1 Tops and Downs</option>
-                  <option value="Elegant Dresses">Elegant Dresses</option>
-                  <option value="Stylish Dresses">Stylish Dresses</option>
-                  <option value="Office Dresses">Office Dresses</option>
-                  <option value="Panties">Panties</option>
-                  <option value="Hair Bands">Hair Bands</option>
-                  <option value="Unisex NFL Jerseys">Unisex NFL Jerseys</option>
-                  <option value="Football Jerseys">Football Jerseys</option>
-                  <option value="Other Ladies Fashion Items">Other Ladies Fashion Items</option>
+                  <option value="Ladies Hoodies">Ladies Hoodies</option>
+                  <option value="Unisex Hoodies">Unisex Hoodies</option>
+                  <option value="Cropped Hoodies">Cropped Hoodies</option>
+                  <option value="Jalabiyas">Jalabiyas</option>
+                  <option value="Abayas">Abayas</option>
+                  <option value="Modest Long Dresses">Modest Long Dresses</option>
+                  <option value="Casual Dresses">Casual Dresses</option>
+                  <option value="Bodycon Dresses">Bodycon Dresses</option>
+                  <option value="Maxi Dresses">Maxi Dresses</option>
+                  <option value="Two-Piece Casual Sets">Two-Piece Casual Sets</option>
+                  <option value="Lounge Sets">Lounge Sets</option>
+                  <option value="Top & Trouser Sets">Top & Trouser Sets</option>
+                  <option value="Leggings">Leggings</option>
+                  <option value="Trousers">Trousers</option>
+                  <option value="Palazzo Pants">Palazzo Pants</option>
+                  <option value="Skirts">Skirts</option>
+                  <option value="Scarves/Headwraps">Scarves/Headwraps</option>
+                  <option value="Sleep Caps">Sleep Caps</option>
                 </select>
               </div>
 
@@ -256,181 +260,185 @@
              </div>
            </div>
          </section>
-      </main>
-    </div>
+     </main>
+   </div>
 
-    <!-- Success Notification Modal -->
-    <div id="successModal" class="success-notification">
-      <div class="success-content">
-        <div class="success-icon">✅</div>
-        <h3>Success!</h3>
-        <p id="successMessage">Product added successfully!</p>
-      </div>
-    </div>
+   <!-- Success Notification Modal -->
+   <div id="successModal" class="success-notification">
+     <div class="success-content">
+       <div class="success-icon">✅</div>
+       <h3>Success!</h3>
+       <p id="successMessage">Product added successfully!</p>
+     </div>
+   </div>
 
-    <!-- Delete Confirmation Modal -->
-    <div id="deleteModal" class="modal">
-      <div class="modal-content delete-modal">
-        <div class="modal-header delete-header">
-          <h2>🗑️ Confirm Deletion</h2>
-        </div>
-        <div class="modal-body delete-body">
-          <div class="delete-warning">
-            <div class="delete-icon">⚠️</div>
-            <p>Are you sure you want to delete this product?</p>
-            <p class="delete-product-name" id="deleteProductName"></p>
-            <p class="delete-note">This action cannot be undone.</p>
-          </div>
-          <div class="modal-actions">
-            <button type="button" class="btn btn-secondary" onclick="cancelDelete()">Cancel</button>
-            <button type="button" class="btn btn-delete" onclick="confirmDelete()">Delete Product</button>
-          </div>
-        </div>
-      </div>
-    </div>
+   <!-- Delete Confirmation Modal -->
+   <div id="deleteModal" class="modal">
+     <div class="modal-content delete-modal">
+       <div class="modal-header delete-header">
+         <h2>🗑️ Confirm Deletion</h2>
+       </div>
+       <div class="modal-body delete-body">
+         <div class="delete-warning">
+           <div class="delete-icon">⚠️</div>
+           <p>Are you sure you want to delete this product?</p>
+           <p class="delete-product-name" id="deleteProductName"></p>
+           <p class="delete-note">This action cannot be undone.</p>
+         </div>
+         <div class="modal-actions">
+           <button type="button" class="btn btn-secondary" onclick="cancelDelete()">Cancel</button>
+           <button type="button" class="btn btn-delete" onclick="confirmDelete()">Delete Product</button>
+         </div>
+       </div>
+     </div>
+   </div>
 
-    <!-- Edit Product Modal -->
-    <div id="editModal" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Edit Product</h2>
-          <span class="modal-close">&times;</span>
-        </div>
-        <div class="modal-body">
-          <form id="editProductForm" enctype="multipart/form-data">
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="edit_product_name">Product Name</label>
-                <input type="text" id="edit_product_name" required>
-              </div>
+   <!-- Edit Product Modal -->
+   <div id="editModal" class="modal">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h2>Edit Product</h2>
+         <span class="modal-close">&times;</span>
+       </div>
+       <div class="modal-body">
+         <form id="editProductForm" enctype="multipart/form-data">
+           <div class="form-grid">
+             <div class="form-group">
+               <label for="edit_product_name">Product Name</label>
+               <input type="text" id="edit_product_name" required>
+             </div>
 
-              <div class="form-group">
-                <label for="edit_cover_image">Cover Image</label>
-                <input type="file" id="edit_cover_image" name="cover_image" accept="image/*">
-              </div>
+             <div class="form-group">
+               <label for="edit_cover_image">Cover Image</label>
+               <input type="file" id="edit_cover_image" name="cover_image" accept="image/*">
+             </div>
 
-              <div class="form-group">
-                <label for="edit_other_images">Other Images</label>
-                <input type="file" id="edit_other_images" name="other_images" accept="image/*" multiple>
-              </div>
+             <div class="form-group">
+               <label for="edit_other_images">Other Images</label>
+               <input type="file" id="edit_other_images" name="other_images" accept="image/*" multiple>
+             </div>
 
-              <div class="form-group">
-                <label for="edit_video">Product Video</label>
-                <input type="file" id="edit_video" name="video" accept="video/*">
-              </div>
+             <div class="form-group">
+               <label for="edit_video">Product Video</label>
+               <input type="file" id="edit_video" name="video" accept="video/*">
+             </div>
 
-              <div class="form-group">
-                <label for="edit_sizes">Sizes</label>
-                <select id="edit_sizes" multiple>
-                  <option value="S">S</option>
-                  <option value="L">L</option>
-                  <option value="XL">XL</option>
-                  <option value="2XL">2XL</option>
-                  <option value="3XL">3XL</option>
-                  <option value="10">10</option>
-                  <option value="11">11</option>
-                  <option value="12">12</option>
-                  <option value="13">13</option>
-                  <option value="14">14</option>
-                  <option value="15">15</option>
-                  <option value="16">16</option>
-                  <option value="17">17</option>
-                  <option value="18">18</option>
-                  <option value="19">19</option>
-                  <option value="20">20</option>
-                </select>
-              </div>
+             <div class="form-group">
+               <label for="edit_sizes">Sizes</label>
+               <select id="edit_sizes" multiple>
+                 <option value="S">S</option>
+                 <option value="L">L</option>
+                 <option value="XL">XL</option>
+                 <option value="2XL">2XL</option>
+                 <option value="3XL">3XL</option>
+                 <option value="10">10</option>
+                 <option value="11">11</option>
+                 <option value="12">12</option>
+                 <option value="13">13</option>
+                 <option value="14">14</option>
+                 <option value="15">15</option>
+                 <option value="16">16</option>
+                 <option value="17">17</option>
+                 <option value="18">18</option>
+                 <option value="19">19</option>
+                 <option value="20">20</option>
+               </select>
+             </div>
 
-              <div class="form-group">
-                <label for="edit_colors">Colors (comma-separated)</label>
-                <input type="text" id="edit_colors" placeholder="e.g., Red, Blue, Green">
-              </div>
+             <div class="form-group">
+               <label for="edit_colors">Colors (comma-separated)</label>
+               <input type="text" id="edit_colors" placeholder="e.g., Red, Blue, Green">
+             </div>
 
-              <div class="form-group">
-                <label for="edit_fabric_type">Fabric Type</label>
-                <input type="text" id="edit_fabric_type">
-              </div>
+             <div class="form-group">
+               <label for="edit_fabric_type">Fabric Type</label>
+               <input type="text" id="edit_fabric_type">
+             </div>
 
-              <div class="form-group">
-                <label for="edit_short_description">Short Description</label>
-                <textarea id="edit_short_description" required></textarea>
-              </div>
+             <div class="form-group">
+               <label for="edit_short_description">Short Description</label>
+               <textarea id="edit_short_description" required></textarea>
+             </div>
 
-              <div class="form-group">
-                <label for="edit_long_description">Long Description</label>
-                <textarea id="edit_long_description"></textarea>
-              </div>
+             <div class="form-group">
+               <label for="edit_long_description">Long Description</label>
+               <textarea id="edit_long_description"></textarea>
+             </div>
 
-              <div class="form-group">
-                <label for="edit_price_ghc">Price (GHC)</label>
-                <input type="number" id="edit_price_ghc" required>
-              </div>
+             <div class="form-group">
+               <label for="edit_price_ghc">Price (GHC)</label>
+               <input type="number" id="edit_price_ghc" required>
+             </div>
 
-              <div class="form-group">
-                <label for="edit_stock_quantity">Stock Quantity</label>
-                <input type="number" id="edit_stock_quantity" min="0" value="0">
-              </div>
+             <div class="form-group">
+               <label for="edit_stock_quantity">Stock Quantity</label>
+               <input type="number" id="edit_stock_quantity" min="0" value="0">
+             </div>
 
-              <div class="form-group">
-                <label for="edit_low_stock_threshold">Low Stock Alert Threshold</label>
-                <input type="number" id="edit_low_stock_threshold" min="0" value="5">
-              </div>
+             <div class="form-group">
+               <label for="edit_low_stock_threshold">Low Stock Alert Threshold</label>
+               <input type="number" id="edit_low_stock_threshold" min="0" value="5">
+             </div>
 
-              <div class="form-group">
-                <label for="edit_stock_status">Stock Status</label>
-                <input type="text" id="edit_stock_status" readonly value="Out of Stock">
-              </div>
+             <div class="form-group">
+               <label for="edit_stock_status">Stock Status</label>
+               <input type="text" id="edit_stock_status" readonly value="Out of Stock">
+             </div>
 
-              <div class="form-group checkbox-group">
-                <input type="checkbox" id="edit_promo">
-                <label for="edit_promo">Enable Promo</label>
-              </div>
+             <div class="form-group checkbox-group">
+               <input type="checkbox" id="edit_promo">
+               <label for="edit_promo">Enable Promo</label>
+             </div>
 
-              <div class="form-group" id="edit_promo_price_group" style="display: none;">
-                <label for="edit_promo_price">Promo Price (GHC)</label>
-                <input type="number" id="edit_promo_price">
-              </div>
+             <div class="form-group" id="edit_promo_price_group" style="display: none;">
+               <label for="edit_promo_price">Promo Price (GHC)</label>
+               <input type="number" id="edit_promo_price">
+             </div>
 
-              <div class="form-group">
-                <label for="edit_categories">Categories</label>
-                <select id="edit_categories" multiple>
-                  <option value="Ladies Basic Tops">Ladies Basic Tops</option>
-                  <option value="Crop Tops">Crop Tops</option>
-                  <option value="Night Wear">Night Wear</option>
-                  <option value="Bum Shorts">Bum Shorts</option>
-                  <option value="2-in-1 Night Wears">2-in-1 Night Wears</option>
-                  <option value="2-in-1 Tops and Downs">2-in-1 Tops and Downs</option>
-                  <option value="Elegant Dresses">Elegant Dresses</option>
-                  <option value="Stylish Dresses">Stylish Dresses</option>
-                  <option value="Office Dresses">Office Dresses</option>
-                  <option value="Panties">Panties</option>
-                  <option value="Hair Bands">Hair Bands</option>
-                  <option value="Unisex NFL Jerseys">Unisex NFL Jerseys</option>
-                  <option value="Football Jerseys">Football Jerseys</option>
-                  <option value="Other Ladies Fashion Items">Other Ladies Fashion Items</option>
-                </select>
-              </div>
+             <div class="form-group">
+               <label for="edit_categories">Categories</label>
+               <select id="edit_categories" multiple>
+                 <option value="Ladies Hoodies">Ladies Hoodies</option>
+                 <option value="Unisex Hoodies">Unisex Hoodies</option>
+                 <option value="Cropped Hoodies">Cropped Hoodies</option>
+                 <option value="Jalabiyas">Jalabiyas</option>
+                 <option value="Abayas">Abayas</option>
+                 <option value="Modest Long Dresses">Modest Long Dresses</option>
+                 <option value="Casual Dresses">Casual Dresses</option>
+                 <option value="Bodycon Dresses">Bodycon Dresses</option>
+                 <option value="Maxi Dresses">Maxi Dresses</option>
+                 <option value="Two-Piece Casual Sets">Two-Piece Casual Sets</option>
+                 <option value="Lounge Sets">Lounge Sets</option>
+                 <option value="Top & Trouser Sets">Top & Trouser Sets</option>
+                 <option value="Leggings">Leggings</option>
+                 <option value="Trousers">Trousers</option>
+                 <option value="Palazzo Pants">Palazzo Pants</option>
+                 <option value="Skirts">Skirts</option>
+                 <option value="Scarves/Headwraps">Scarves/Headwraps</option>
+                 <option value="Sleep Caps">Sleep Caps</option>
+               </select>
+             </div>
 
-              <div class="form-group">
-                <label for="edit_sections">Sections</label>
-                <select id="edit_sections" multiple>
-                  <option value="New Arrivals">New Arrivals</option>
-                  <option value="Top Deals">Top Deals</option>
-                  <option value="Fast Selling Products">Fast Selling Products</option>
-                </select>
-              </div>
-            </div>
+             <div class="form-group">
+               <label for="edit_sections">Sections</label>
+               <select id="edit_sections" multiple>
+                 <option value="New Arrivals">New Arrivals</option>
+                 <option value="Top Deals">Top Deals</option>
+                 <option value="Fast Selling Products">Fast Selling Products</option>
+               </select>
+             </div>
+           </div>
 
-            <div class="modal-actions">
-              <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
-              <button type="submit" class="btn btn-primary">Update Product</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
+           <div class="modal-actions">
+             <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+             <button type="submit" class="btn btn-primary">Update Product</button>
+           </div>
+         </form>
+       </div>
+     </div>
+   </div>
+ </div>
 
-  <script src="/script.js"></script>
+ <script src="/script.js"></script>
 </body>
 </html>

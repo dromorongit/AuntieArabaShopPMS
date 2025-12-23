@@ -24,7 +24,7 @@ async function fetchProducts() {
             name: product.product_name,
             price: product.promo && product.promo_price ? product.promo_price : product.price_ghc,
             originalPrice: product.promo ? product.price_ghc : null,
-            image: product.cover_image ? `${API_BASE}/${product.cover_image}` : 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
+            image: product.cover_image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop',
             categories: product.categories || [], // Keep all categories as array
             category: product.categories ? product.categories[0] : 'general', // Keep for backward compatibility
             sections: product.sections || [],
@@ -510,12 +510,12 @@ function displayProductDetails(product) {
     if (product.promo && product.promo_price) {
         document.getElementById('product-price').innerHTML = `<span class="original-price">GHS ${product.price_ghc.toFixed(2)}</span> <span class="promo-price">GHS ${product.promo_price.toFixed(2)}</span>`;
     }
-    document.getElementById('product-image').src = product.cover_image ? `${API_BASE}/${product.cover_image}` : 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop';
+    document.getElementById('product-image').src = product.cover_image || 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop';
 
     // Display video if available
     const videoContainer = document.getElementById('product-video');
     if (product.video) {
-        videoContainer.innerHTML = `<video controls style="width: 100%; max-width: 400px;"><source src="${API_BASE}/${product.video}" type="video/mp4">Your browser does not support the video tag.</video>`;
+        videoContainer.innerHTML = `<video controls style="width: 100%; max-width: 400px;"><source src="${product.video}" type="video/mp4">Your browser does not support the video tag.</video>`;
         videoContainer.style.display = 'block';
     } else {
         videoContainer.style.display = 'none';
